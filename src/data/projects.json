@@ -129,13 +129,6 @@
       },
       {
         "kind": "image",
-        "src": "/media/eco/01.jpg",
-        "w": 1500,
-        "h": 2000,
-        "alt": "Ecozoic"
-      },
-      {
-        "kind": "image",
         "src": "/media/eco/04.jpg",
         "w": 1500,
         "h": 2000,
