@@ -46,6 +46,9 @@ export const PAGES: Page[] = [
   { id: "ccam", num: "2.1", path: "work/ccam", title: { fr: "CCAM", en: "CCAM" }, view: "project", theme: "media" },
   { id: "ccam-guidelines", num: "2.1a", path: "work/ccam/guidelines", title: { fr: "Guide CCAM", en: "CCAM Guidelines" }, view: "guidelines" },
   { id: "ecozoic", num: "2.2", path: "work/ecozoic", title: { fr: "Ecozoic", en: "Ecozoic" }, view: "project", theme: "media" },
+  { id: "ecozoic-guidelines", num: "2.2a", path: "work/ecozoic/guidelines", title: { fr: "Guide Ecozoic", en: "Ecozoic Guidelines" }, view: "guidelines" },
+  { id: "chimie", num: "2.3", path: "work/chimie", title: { fr: "chimie", en: "chimie" }, view: "project", theme: "media" },
+  { id: "chimie-guidelines", num: "2.3a", path: "work/chimie/guidelines", title: { fr: "Guide chimie", en: "chimie Guidelines" }, view: "guidelines" },
 
   { id: "heard", num: "3.1", path: "mandate/what-we-heard", title: { fr: "Ce qu’on a entendu", en: "What we heard" }, view: "text" },
   { id: "approach", num: "3.2", path: "mandate/how-we-work", title: { fr: "Comment on travaille", en: "How we work" }, view: "process" },
@@ -70,7 +73,7 @@ export const PAGES: Page[] = [
 
 export const CHAPTERS: Chapter[] = [
   { num: "1", title: { fr: "Qui nous sommes", en: "Who we are" }, pages: ["about", "team"] },
-  { num: "2", title: { fr: "Projets choisis", en: "Selected projects" }, pages: ["work", "ccam", "ccam-guidelines", "ecozoic"] },
+  { num: "2", title: { fr: "Projets choisis", en: "Selected projects" }, pages: ["work", "ccam", "ccam-guidelines", "ecozoic", "ecozoic-guidelines", "chimie", "chimie-guidelines"] },
   {
     num: "3",
     title: { fr: "Le mandat", en: "The mandate" },

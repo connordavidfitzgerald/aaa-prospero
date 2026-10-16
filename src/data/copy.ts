@@ -1,4 +1,6 @@
 import type { L } from "../lib/i18n";
+import type { Media, Project } from "../lib/projects";
+import projects from "./projects.json";
 
 // Proposal copy, FR verbatim from the Figma "PROPOSAL CONTENT BASE" frames,
 // EN translated. Editorial notes from the source ([ASSUMED], [À CONFIRMER],
@@ -89,35 +91,46 @@ export const WORK = {
   ),
 };
 
-export const CCAM = {
+const img = (src: string, alt: string, w = 2400, h = 1600): Media => ({ kind: "image", src, w, h, alt });
+
+export const CCAM: Project = {
   client: "CCAM",
   description: l(
     "Mois de l’histoire des Noirs 2026 pour le Centre culturel afro-canadien de Montréal : titre de saison, série de conférences à Campus MIL, affiches de l’exposition Chantier à la Galerie Art Mûr, et un guide de saison pour que l’équipe décline le tout de façon autonome.",
     "Black History Month 2026 for the Centre culturel afro-canadien de Montréal: the season title, a conference series at Campus MIL, posters for the Chantier exhibition at Galerie Art Mûr, and season guidelines so the team can extend it all on its own.",
   ),
   services: l("Identité de saison, affiches, réseaux sociaux, guide", "Season identity, posters, social, guidelines"),
+  links: [],
   media: [
-    { src: "/media/ccam/subway.jpg", w: 1568, h: 1046, alt: "Affiche Chantier dans le métro" },
-    { src: "/media/ccam/poster-landscape.jpg", w: 1568, h: 882, alt: "Affiche Chantier, format paysage" },
-    { src: "/media/ccam/ig-104.jpg", w: 1080, h: 1350, alt: "Publication Instagram 104" },
-    { src: "/media/ccam/ig-111.jpg", w: 1080, h: 1350, alt: "Publication Instagram 111" },
-    { src: "/media/ccam/poster-portrait.jpg", w: 1226, h: 1568, alt: "Affiche Chantier, format portrait" },
-    { src: "/media/ccam/ig-105.jpg", w: 1080, h: 1350, alt: "Publication Instagram 105" },
-    { src: "/media/ccam/ig-115.jpg", w: 1080, h: 1350, alt: "Publication Instagram 115" },
-    { src: "/media/ccam/poster-square.jpg", w: 1568, h: 1568, alt: "Affiche Chantier, format carré" },
-    { src: "/media/ccam/ig-109.jpg", w: 1080, h: 1350, alt: "Publication Instagram 109" },
-    { src: "/media/ccam/ig-112.jpg", w: 1080, h: 1350, alt: "Publication Instagram 112" },
+    img("/media/ccam/macbook.jpg", "Site du CCAM sur un portable"),
+    img("/media/ccam/phone.jpg", "Publications Instagram du CCAM sur un téléphone"),
+    img("/media/ccam/subway.jpg", "Affiche Chantier dans le métro", 1568, 1046),
+    img("/media/ccam/poster-portrait.jpg", "Affiche Chantier, format portrait", 1226, 1568),
   ],
 };
 
-// TODO [À COMPLÉTER]: the Figma portfolio page lists more case studies
-// (chimie, Black Theatre Workshop, Routes to Rootz, Le Hub, BxB).
+// Ecozoic and chimie are copied from the AAA Sanity dataset by
+// scripts/fetch-project-media.mjs; the mockups ahead of them are local.
+export const ECOZOIC: Project = {
+  ...projects.ecozoic,
+  client: "Ecozoic",
+  media: [
+    img("/media/eco/macbook.jpg", "Site de Leadership for the Ecozoic sur un portable"),
+    img("/media/eco/chair.jpg", "Site de Leadership for the Ecozoic, portable posé sur une chaise"),
+    img("/media/eco/tote.jpg", "Sac fourre-tout Leadership for the Ecozoic"),
+    img("/media/eco/door.jpg", "Plaque de porte Leadership for the Ecozoic"),
+    ...(projects.ecozoic.media as Media[]),
+  ],
+};
+
+export const CHIMIE: Project = { ...projects.chimie, media: projects.chimie.media as Media[] };
 
 export const HEARD = {
   intro: l(
     "Le Prospero a bâti, rue Ontario, une salle où les écritures contemporaines les plus exigeantes trouvent un public qui revient, saison après saison. Ce qu’il lui faut maintenant, c’est une identité qui tienne cette promesse d’elle-même, peu importe ce qui est à l’affiche : radicale dans ce qu’elle ose, populaire dans la manière dont elle accueille.",
     "On rue Ontario, the Prospero has built a house where the most demanding contemporary writing finds an audience that comes back, season after season. What it needs now is an identity that keeps that promise on its own, whatever is on the bill: radical in what it dares, popular in how it welcomes.",
   ),
+  image: { src: "/media/heard/theatre.jpg", w: 2400, h: 1600, alt: l("La façade du Théâtre Prospero, rue Ontario", "The Théâtre Prospero façade on rue Ontario") },
 };
 
 export const APPROACH = {
