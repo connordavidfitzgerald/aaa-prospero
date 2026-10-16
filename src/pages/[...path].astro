@@ -21,11 +21,10 @@ import AnalysisView from "../views/AnalysisView.astro";
 import StepsView from "../views/StepsView.astro";
 import ContactView from "../views/ContactView.astro";
 import { PAGES, page, nextPage, prevPage, type Page } from "../data/pages";
-import { UI, CCAM, HEARD, COLUMNS, BUDGETS } from "../data/copy";
+import { UI, CCAM, ECOZOIC, CHIMIE, HEARD, COLUMNS, BUDGETS } from "../data/copy";
 import { LANGS, href, t, type Lang } from "../lib/i18n";
 import { getTeam, type Member } from "../lib/team";
-import { getProject } from "../lib/projects";
-import { img } from "../lib/sanity";
+import type { Project } from "../lib/projects";
 
 type PageProps = { lang: Lang; page: Page; member?: Member; memberIndex?: number };
 
@@ -75,21 +74,18 @@ if (member && memberIndex !== undefined) {
 }
 
 // Portfolio data
-const ecozoic = p.id === "ecozoic" || p.id === "work" ? await getProject("ecozoic", lang) : undefined;
-const ecoImages = ecozoic?.media.filter((m) => m.kind === "image") ?? [];
-const thumbs = ecozoic
-  ? [
-      { key: "ccam", name: "CCAM", href: href("work/ccam", lang), src: "/media/ccam/subway.jpg" },
-      { key: "ecozoic", name: "Ecozoic", href: href("work/ecozoic", lang), src: img(ecozoic.cover, 900) },
-      { key: "ccam", name: "CCAM", href: href("work/ccam", lang), src: "/media/ccam/poster-landscape.jpg" },
-      {
-        key: "ecozoic",
-        name: "Ecozoic",
-        href: href("work/ecozoic", lang),
-        src: img(ecoImages.find((m) => m.kind === "image" && (m.w ?? 0) > (m.h ?? 0))?.src ?? ecozoic.cover, 900),
-      },
-    ]
-  : [];
+const PROJECTS: Record<string, Project> = { ccam: CCAM, ecozoic: ECOZOIC, chimie: CHIMIE };
+const project = p.view === "project" ? PROJECTS[p.id] : undefined;
+const guideBrand = p.view === "guidelines" ? (p.id.replace("-guidelines", "") as "ccam" | "ecozoic" | "chimie") : undefined;
+const thumb = (key: string, src: string) => ({ key, name: PROJECTS[key].client, href: href(`work/${key}`, lang), src });
+const thumbs = [
+  thumb("ccam", "/media/ccam/subway.jpg"),
+  thumb("ecozoic", "/media/eco/macbook.jpg"),
+  thumb("chimie", "/media/chimie/01.jpg"),
+  thumb("ccam", "/media/ccam/macbook.jpg"),
+  thumb("ecozoic", "/media/eco/door.jpg"),
+  thumb("chimie", "/media/chimie/04.jpg"),
+];
 ---
 
 <Layout
@@ -108,33 +104,23 @@ const thumbs = ecozoic
   {member && <MemberView lang={lang} member={member} prev={memberPrev} next={memberNext} />}
   {p.view === "work" && <WorkView lang={lang} prev={prev} next={next} thumbs={thumbs} />}
   {
-    p.id === "ccam" && (
+    project && (
       <ProjectView
         lang={lang}
-        media={CCAM.media.map((m) => ({ kind: "image" as const, ...m }))}
-        description={t(CCAM.description, lang)}
-        services={t(CCAM.services, lang)}
-        links={[{ label: t(UI.viewGuidelines, lang), href: href("work/ccam/guidelines", lang), internal: true }]}
+        media={project.media}
+        description={t(project.description, lang)}
+        services={t(project.services, lang)}
+        links={[
+          { label: t(UI.viewGuidelines, lang), href: href(`work/${p.id}/guidelines`, lang), internal: true },
+          ...project.links.map((l) => ({ label: `${t(l.label, lang)} ↗`, href: l.href })),
+        ]}
         prev={prev}
         next={next}
       />
     )
   }
-  {
-    p.id === "ecozoic" && ecozoic && (
-      <ProjectView
-        lang={lang}
-        media={ecozoic.media.map((m) => (m.kind === "image" ? { ...m, src: img(m.src, 1800) } : m))}
-        description={ecozoic.description}
-        services={ecozoic.services}
-        links={ecozoic.links.map((l) => ({ label: `${l.label} ↗`, href: l.href }))}
-        prev={prev}
-        next={next}
-      />
-    )
-  }
-  {p.view === "guidelines" && <GuidelinesView lang={lang} prev={prev} next={next} />}
-  {p.view === "text" && <TextView text={t(HEARD.intro, lang)} prev={prev} next={next} />}
+  {guideBrand && <GuidelinesView lang={lang} brand={guideBrand} prev={prev} next={next} />}
+  {p.view === "text" && <TextView text={t(HEARD.intro, lang)} image={{ ...HEARD.image, alt: t(HEARD.image.alt, lang) }} prev={prev} next={next} />}
   {p.view === "process" && <ProcessView lang={lang} prev={prev} next={next} />}
   {p.view === "phases" && <PhasesView lang={lang} prev={prev} next={next} />}
   {p.view === "columns" && <ColumnsView lang={lang} data={COLUMNS[p.id]} prev={prev} next={next} />}

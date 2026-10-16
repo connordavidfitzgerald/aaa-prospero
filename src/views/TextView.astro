@@ -1,11 +1,20 @@
 ---
 import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
 interface Props {
   text: string;
+  image?: { src: string; w: number; h: number; alt: string };
   prev: { href: string; label: string };
   next: { href: string; label: string };
 }
-const { text, prev, next } = Astro.props;
+const { text, image, prev, next } = Astro.props;
 ---
 
 <Intro text={text} prev={prev} next={next} />
+{
+  image && (
+    <div class="mt-[calc(var(--fs)*1.4)] px-[10px] pb-[10px]">
+      <Media src={image.src} alt={image.alt} width={image.w} height={image.h} aspect={`${image.w} / ${image.h}`} sizes="100vw" />
+    </div>
+  )
+}
