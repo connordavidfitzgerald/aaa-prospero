@@ -103,9 +103,9 @@ export const CCAM: Project = {
   services: l("Identité de saison, affiches, réseaux sociaux, guide", "Season identity, posters, social, guidelines"),
   links: [],
   media: [
+    img("/media/ccam/subway.jpg", "Affiche Chantier dans le métro", 1568, 1046),
     img("/media/ccam/posters.jpg", "Affiches de la saison : Triomphe, Bourse émergence, Vers un avenir plus juste et équitable"),
     img("/media/ccam/phone.jpg", "Publication Instagram du CCAM sur un téléphone"),
-    img("/media/ccam/subway.jpg", "Affiche Chantier dans le métro", 1568, 1046),
     img("/media/ccam/pamphlet.jpg", "Dépliant de l’exposition Chantier à la Galerie Art Mûr"),
   ],
 };
@@ -116,6 +116,7 @@ export const ECOZOIC: Project = {
   ...projects.ecozoic,
   client: "Ecozoic",
   media: [
+    img("/media/eco/eco-cover.jpg", "Leadership for the Ecozoic"),
     img("/media/eco/instagram.jpg", "Publications Instagram de Leadership for the Ecozoic"),
     img("/media/eco/chair.jpg", "Site de Leadership for the Ecozoic, portable posé sur une chaise"),
     img("/media/eco/tote.jpg", "Sac fourre-tout Leadership for the Ecozoic"),

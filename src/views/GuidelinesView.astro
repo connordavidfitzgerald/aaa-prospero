@@ -95,11 +95,14 @@ const cols = pages.length > 48 ? 10 : 8;
   <section class="hidden pt-[var(--intro)]" data-guide-full>
     <div class="grid-12">
       <button type="button" class="link col-span-2 text-left" data-guide-close>{t(UI.allPages, lang)}</button>
-      <span class="col-span-1 text-right tabular text-muted md:col-start-10 md:col-span-1" data-guide-count></span>
-      <button type="button" class="link col-span-1 text-right md:col-start-11 md:text-left" aria-label="Previous" data-guide-prev>←</button>
-      <button type="button" class="link hidden text-right md:col-start-12 md:block" aria-label="Next" data-guide-next>→</button>
+      <!-- Count and arrows sit together against the right edge. -->
+      <div class="col-span-2 flex justify-end gap-[1em] md:col-start-10 md:col-span-3">
+        <span class="tabular text-muted" data-guide-count></span>
+        <button type="button" class="link" aria-label="Previous" data-guide-prev>←</button>
+        <button type="button" class="link hidden md:block" aria-label="Next" data-guide-next>→</button>
+      </div>
     </div>
-    <div class="relative mx-[10px] mt-[calc(var(--fs)*1.4)] aspect-video overflow-hidden bg-current/5" data-guide-stage>
+    <div class="relative mx-[10px] mt-[calc(var(--fs)*0.6)] aspect-video overflow-hidden bg-current/5" data-guide-stage>
     </div>
     <button type="button" class="link mx-[10px] mt-[0.6em] md:hidden" data-guide-next-mobile>→</button>
   </section>
@@ -115,10 +118,12 @@ const cols = pages.length > 48 ? 10 : 8;
 </div>
 
 <style>
-  /* Full view: the page is as large as the slide allows, centred. */
+  /* Full view: the page is as large as the slide allows, centred. The
+     height left is the slide minus the controls row (1.1em line + 0.6em gap)
+     and main's 10px bottom padding. */
   @media (width >= 48rem) {
     [data-guide-stage] {
-      width: min(calc(100% - 20px), calc((100svh - var(--intro) - var(--fs) * 2.5 - 20px) * 16 / 9));
+      width: min(calc(100% - 20px), calc((100svh - var(--intro) - var(--fs) * 1.7 - 10px) * 16 / 9));
       margin-inline: auto;
     }
   }

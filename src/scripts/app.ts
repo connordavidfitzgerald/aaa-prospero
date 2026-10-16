@@ -385,6 +385,7 @@ function initWork(main: HTMLElement) {
 
 // Clicking the left or right half of the screen steps one image back or
 // forward; the cursor shows which way. The wheel still scrolls sideways.
+let stripStep: ((dir: number) => boolean) | null = null;
 function initStrip(main: HTMLElement) {
   const strip = main.querySelector<HTMLElement>("[data-strip]");
   if (!strip) return;
@@ -425,6 +426,15 @@ function initStrip(main: HTMLElement) {
   const onScroll = () => {
     if (!gsap.isTweening(strip)) target = strip.scrollLeft;
   };
+
+  // The arrow keys step through the media first, then on to the next page.
+  stripStep = (dir) => {
+    const n = current() + dir;
+    if (n < 0 || n >= count) return false;
+    to(n * strip.clientWidth);
+    return true;
+  };
+  teardown.push(() => (stripStep = null));
 
   strip.addEventListener("wheel", onWheel, { passive: false });
   strip.addEventListener("click", onClick);
@@ -786,8 +796,10 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") return closeOpenMenu?.();
   if (e.metaKey || e.ctrlKey || e.altKey || root.dataset.viewer || closeOpenMenu) return;
   if ((e.target as Element).closest("input, textarea, [contenteditable]")) return;
+  const dir = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+  if (dir && stripStep?.(dir)) return;
   const main = document.getElementById("main");
-  const to = e.key === "ArrowRight" ? main?.dataset.next : e.key === "ArrowLeft" ? main?.dataset.prev : undefined;
+  const to = dir > 0 ? main?.dataset.next : dir < 0 ? main?.dataset.prev : undefined;
   if (to) navigate(to);
 });
 
