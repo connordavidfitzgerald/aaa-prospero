@@ -1,0 +1,115 @@
+---
+import Intro from "../components/Intro.astro";
+import type { Budget } from "../data/copy";
+import { t, type Lang, type L } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  data: Budget;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, data, prev, next } = Astro.props;
+const cell = (c: L | string) => (typeof c === "string" ? c : t(c, lang));
+const [lead, sub] = data.title;
+// Long tables tighten their rows on shorter screens so the page stays one slide.
+const dense = data.rows.length > 12;
+---
+
+<!--
+  Budget pages, after the proposal document (Figma FR 20–23): the title with
+  its first word highlighted in green, notes in columns 1–4, and the table in
+  columns 5–12 under a green header row. Everything is set flush left.
+-->
+<div class="slide">
+<Intro prev={prev} next={next}>
+  <h1>
+    <span class="block" data-reveal><mark class="highlight">{t(lead, lang)}</mark></span>
+    <span class="block" data-reveal>{t(sub, lang)}</span>
+  </h1>
+</Intro>
+
+<!-- On a slide the gaps above and below the table give way before the table does. -->
+<div class="hidden md:block shrink basis-[calc(var(--fs)*3)] min-h-[calc(var(--fs)*1.2)]"></div>
+<section class="grid-12 mt-[calc(var(--fs)*2)] gap-y-[calc(var(--fs)*3)] pb-[10svh] md:mt-0 md:pb-0 items-start">
+  <div class="col-span-4 md:col-span-4 md:pr-[10%]">
+    {data.notes.map((p, i) => <p class:list={[i > 0 && "mt-[1em]"]} data-split>{t(p, lang)}</p>)}
+  </div>
+
+  <div class="@container col-span-4 md:col-start-5 md:col-span-8">
+    <table class:list={["w-full border-collapse text-left", dense && "dense"]}>
+      <thead>
+        <tr class="bg-green text-ink">
+          <th scope="col" class="w-[60%] px-[10px] py-[0.45em] font-medium" data-reveal>{t(data.head[0], lang)}</th>
+          {
+            data.head.slice(1).map((h, i) => (
+              <th scope="col" class:list={["px-[10px] py-[0.45em] font-medium", i === 2 ? "w-[15%]" : "w-[12.5%]"]} data-reveal>
+                {t(h, lang)}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody class="dim-list">
+        {
+          data.rows.map((r) => (
+            <tr data-row data-rule>
+              <th scope="row" class="px-[10px] py-[0.55em] align-top font-medium" data-reveal>
+                {t(r.label, lang)}
+                {r.note && <span class="ml-[1.2em] whitespace-nowrap">{t(r.note, lang)}</span>}
+              </th>
+              {r.cells.map((c) => (
+                <td class="px-[10px] py-[0.55em] align-top whitespace-nowrap" data-reveal>{cell(c)}</td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+<div class="hidden md:block shrink basis-[10svh] min-h-[10px]"></div>
+</div>
+
+
+<style>
+  /* A grey rule under every row (Figma #8a8a8a), hung off the first cell so it
+     spans the table: a ::after on the <tr> itself becomes an extra, empty
+     column in Chrome. */
+  tbody tr > :first-child {
+    position: relative;
+  }
+  tbody tr > :first-child::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100cqw;
+    height: 1px;
+    background: currentColor;
+    opacity: var(--muted);
+    transform-origin: left;
+    transform: scaleX(var(--rule, 1));
+  }
+  @media (width >= 48rem) and (height < 64rem) {
+    .dense :is(th, td) {
+      padding-block: 0.3em;
+    }
+  }
+  @media (width >= 48rem) and (height < 50rem) {
+    .dense :is(th, td) {
+      padding-block: 0.2em;
+    }
+  }
+  @media (width < 48rem) {
+    table th:first-child {
+      width: auto;
+    }
+    thead th:nth-child(2),
+    thead th:nth-child(3),
+    tbody tr > :nth-child(2),
+    tbody tr > :nth-child(3) {
+      display: none;
+    }
+  }
+</style>

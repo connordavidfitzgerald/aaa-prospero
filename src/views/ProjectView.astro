@@ -1,0 +1,108 @@
+---
+import Media from "../components/Media.astro";
+import PrevNext from "../components/PrevNext.astro";
+import { UI } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+import type { Media as M } from "../lib/projects";
+
+interface Props {
+  lang: Lang;
+  media: M[];
+  description: string;
+  services?: string;
+  links: { label: string; href: string; internal?: boolean }[];
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, media, description, services, links, prev, next } = Astro.props;
+---
+
+<!--
+  Project view: a horizontal strip of full-screen media behind the nav, white
+  text on top. +Info (bottom-left) opens the description over a dark scrim;
+  links sit beside it; Prev / Next bottom-right, all on one bottom line in the
+  grid. Clicking the left or right half of the screen steps through the media;
+  the wheel scrolls the strip sideways.
+-->
+<section class="fixed inset-0 text-paper" data-pinned>
+  <div
+    class="hide-scrollbar flex h-full overflow-x-auto overscroll-x-contain pointer-coarse:snap-x pointer-coarse:snap-mandatory"
+    data-strip
+    data-lenis-prevent
+  >
+    {
+      media.map((m, i) => (
+        <Media
+          class="h-full w-screen shrink-0 snap-start"
+          src={m.kind === "image" ? m.src : undefined}
+          playbackId={m.kind === "video" ? m.playbackId : undefined}
+          alt={m.kind === "image" ? m.alt : undefined}
+          eager={i < 2}
+          sizes="100vw"
+        />
+      ))
+    }
+  </div>
+
+  <!-- Soft scrims so the white type holds on light images. -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-[120px] bg-linear-to-b from-black/30 to-transparent"></div>
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[180px] bg-linear-to-t from-black/35 to-transparent"></div>
+
+  <div class="invisible absolute inset-0 bg-ink/75" data-info-overlay aria-hidden="true"></div>
+  <div
+    id="project-info"
+    class="pointer-events-none invisible absolute inset-x-0 bottom-[calc(10px+var(--fs)*4)] grid-12 md:bottom-[calc(10px+var(--fs)*2)]"
+    data-info-panel
+    data-lenis-prevent
+  >
+    <div class="pointer-events-auto col-span-4 max-h-[calc(100svh-140px)] overflow-y-auto hide-scrollbar md:col-span-6">
+      <p class="font-medium tracking-[-0.02em]" data-info-item>{description}</p>
+      {services && <div class="mt-[0.6em]" data-info-item><p class="text-muted">{services}</p></div>}
+    </div>
+  </div>
+
+  <!-- Clicks between these controls fall through to the strip. -->
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 grid-12 items-end pb-[10px] *:pointer-events-auto">
+    <div class="col-span-1 md:col-span-3 justify-self-start">
+      <button
+        type="button"
+        class="link block"
+        aria-expanded="false"
+        aria-controls="project-info"
+        data-info-toggle
+        data-open={t(UI.infoClose, lang)}
+        data-closed={t(UI.info, lang)}
+        data-reveal
+      >
+        <span class="mask block"><span class="block" data-info-label>{t(UI.info, lang)}</span></span>
+      </button>
+    </div>
+    <div class="col-span-2 flex flex-col items-start gap-x-[1em] gap-y-[0.2em] justify-self-start md:col-span-6 md:flex-row md:flex-wrap">
+      {
+        links.map((l) => (
+          <a href={l.href} class="link" target={l.internal ? undefined : "_blank"} rel={l.internal ? undefined : "noopener"} data-reveal>
+            {l.label}
+          </a>
+        ))
+      }
+    </div>
+    <div class="col-span-1 justify-self-end md:col-start-10 md:col-span-3">
+      <PrevNext prev={prev} next={next} />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Which way a click will step. */
+  [data-strip][data-dir="-1"] {
+    cursor: w-resize;
+  }
+  [data-strip][data-dir="1"] {
+    cursor: e-resize;
+  }
+  .mask {
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+</style>

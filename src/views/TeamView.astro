@@ -1,0 +1,123 @@
+---
+import Intro from "../components/Intro.astro";
+import { TEAM, UI } from "../data/copy";
+import { href, t, type Lang } from "../lib/i18n";
+import { img } from "../lib/sanity";
+import type { Member } from "../lib/team";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+  members: Member[];
+}
+const { lang, prev, next, members } = Astro.props;
+const groups = [
+  { label: t(UI.core, lang), members: members.filter((m) => m.memberType === "core") },
+  { label: t(UI.collaborators, lang), members: members.filter((m) => m.memberType === "collaborator") },
+];
+---
+
+<!--
+  Team list, after aaa-next's team page: a square picture held in the centre of
+  the viewport (the team photo by default, the member's portrait on hover) over
+  hairline rows that light up green. On mobile the picture sticks under the nav
+  and the row nearest it is highlighted as you scroll.
+-->
+<div class="relative flex flex-col" data-team>
+  <div
+    class="pointer-events-none sticky top-0 z-20 order-2 bg-[var(--bg)] pt-[calc(var(--fs)+20px)] pb-[10px] md:order-1 md:-mb-[100svh] md:flex md:h-[100svh] md:items-center md:justify-center md:bg-transparent md:p-0"
+    data-team-sticky
+  >
+    <div
+      class="pointer-events-auto relative mx-auto aspect-square w-[56%] cursor-pointer md:pointer-events-none md:w-[var(--team-img)]"
+      data-media
+      data-team-frame
+    >
+      <img
+        src="/media/team/team.jpg"
+        alt=""
+        width="1120"
+        height="1400"
+        class="absolute inset-0 h-full w-full object-cover"
+        decoding="async"
+      />
+      {
+        members.map((m) => (
+          <img
+            src={img(m.image, 800)}
+            alt=""
+            class="absolute inset-0 h-full w-full object-cover opacity-0"
+            loading="lazy"
+            decoding="async"
+            data-team-img={m.slug}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <Intro class="order-1 md:order-2" text={t(TEAM.intro, lang)} prev={prev} next={next} />
+
+  <div class="relative z-10 order-3 mt-[calc(var(--fs)*3)] md:mt-[42svh]">
+    {
+      groups.map((g) => (
+        <section class="mx-[10px] mb-[calc(var(--fs)*3)]">
+          <p class="rule-b pb-[0.6em] text-muted" data-reveal>
+            {g.label}
+          </p>
+          <ul>
+            {g.members.map((m) => (
+              <li class="rule-b" data-rule>
+                <a
+                  href={href(`team/${m.slug}`, lang)}
+                  class="relative grid grid-cols-4 items-center gap-x-[10px] whitespace-nowrap py-[0.5em] md:grid-cols-12"
+                  data-team-row={m.slug}
+                >
+                  <span class="absolute inset-0 origin-top scale-y-0 bg-green" data-team-hl />
+                  <span class="relative col-span-2 truncate md:col-span-8" data-reveal>
+                    {m.name}
+                  </span>
+                  <span
+                    class="relative col-span-2 flex min-w-0 items-center justify-end gap-x-[10px] md:col-span-4 md:justify-between"
+                    data-reveal
+                  >
+                    <span class="truncate text-right md:text-left">{m.services[0]}</span>
+                    <span class="hidden shrink-0 whitespace-nowrap text-right md:block">{m.location}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <!-- Releases the centred picture when its bottom meets the end of the list. -->
+  <div aria-hidden="true" class="team-buffer order-4 hidden md:block"></div>
+</div>
+
+<style>
+  [data-team] {
+    --team-img: clamp(220px, 22vw, 420px);
+  }
+  /* The hairline under each row, drawn left→right on entrance like the
+     site's other rules. */
+  .rule-b {
+    position: relative;
+  }
+  .rule-b::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.18;
+    transform-origin: left;
+    transform: scaleX(var(--rule, 1));
+  }
+  .team-buffer {
+    height: calc(50svh - var(--team-img) / 2 - var(--fs) * 3);
+  }
+</style>

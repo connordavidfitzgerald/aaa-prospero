@@ -1,0 +1,24 @@
+---
+import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
+import { ABOUT } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+---
+
+<div class="slide">
+  <Intro text={t(ABOUT.intro, lang)} prev={prev} next={next} />
+
+  <div class="px-[10px] mt-[calc(var(--fs)*1.4)] md:flex-1 md:min-h-0">
+    <Media
+      playbackId="y78a00Av1dLxN4u201SYutcUghoFm9up8JppX8CkbIahY"
+      class="aspect-[1568/883] md:aspect-auto md:h-full"
+    />
+  </div>
+</div>

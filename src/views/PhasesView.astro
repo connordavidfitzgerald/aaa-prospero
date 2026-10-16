@@ -1,0 +1,33 @@
+---
+import Intro from "../components/Intro.astro";
+import { PHASES } from "../data/copy";
+import { page } from "../data/pages";
+import { href, t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+const label = (v: string | { fr: string; en: string }) => (typeof v === "string" ? v : t(v, lang));
+---
+
+<Intro text={t(PHASES.intro, lang)} prev={prev} next={next}>
+  <p class="mt-[1em] text-muted" data-split>{t(PHASES.outro, lang)}</p>
+</Intro>
+
+<ol class="mt-[22svh] dim-list">
+  {
+    PHASES.rows.map((r) => (
+      <li data-row>
+        <a href={href(page(r.page).path, lang)} class="rule grid-12 py-[0.55em] [--rule-x:10px]" data-rule>
+          <span class="col-span-2 md:col-span-3" data-reveal>{label(r.num)}</span>
+          <span class="col-span-2 md:col-span-4" data-reveal>{t(r.name, lang)}</span>
+          <span class="col-span-3 text-muted md:col-span-3" data-reveal>{t(r.when, lang)}</span>
+          <span class="col-span-1 text-right md:col-span-2" data-reveal>{page(r.page).num} →</span>
+        </a>
+      </li>
+    ))
+  }
+</ol>

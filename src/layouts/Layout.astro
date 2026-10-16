@@ -1,0 +1,57 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Nav from "../components/Nav.astro";
+import "../styles/global.css";
+import type { Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  pageId: string;
+  num: string;
+  title: string;
+  altHref: string;
+  prevHref: string;
+  nextHref: string;
+  theme?: "dark" | "media";
+}
+
+const { lang, pageId, num, title, altHref, prevHref, nextHref, theme } = Astro.props;
+const docTitle = pageId === "index" ? "Applied Archive Atelier × Théâtre Prospero" : `${title} — A.A.A. × Prospero`;
+---
+
+<!doctype html>
+<html lang={lang} data-theme={theme ?? "light"} transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/FavoritPro-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <title>{docTitle}</title>
+    <script is:inline>
+      // ?preview: the page as shown inside the Index hover preview, drawn in
+      // its final state with no motion.
+      if (new URLSearchParams(location.search).has("preview")) document.documentElement.dataset.preview = "";
+      else document.documentElement.classList.add("js");
+    </script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body>
+    <Nav lang={lang} pageId={pageId} num={num} title={title} altHref={altHref} />
+    <main
+      id="main"
+      class="relative pb-[10px]"
+      data-page={pageId}
+      data-num={num}
+      data-title={title}
+      data-alt={altHref}
+      data-prev={prevHref}
+      data-next={nextHref}
+    >
+      <slot />
+    </main>
+    <script>
+      import "../scripts/app";
+    </script>
+  </body>
+</html>

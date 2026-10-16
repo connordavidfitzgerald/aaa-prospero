@@ -1,0 +1,32 @@
+---
+import Intro from "../components/Intro.astro";
+import type { Columns } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  data: Columns;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, data, prev, next } = Astro.props;
+---
+
+<Intro text={t(data.intro, lang)} prev={prev} next={next} />
+
+<section class="grid-12 mt-[18svh] gap-y-[calc(var(--fs)*3)] pb-[10svh]">
+  {
+    data.columns.map((c, i) => (
+      <div class:list={["col-span-4 md:col-span-6", i === 1 && "md:col-start-7"]}>
+        <p class="mb-[0.6em] text-muted" data-reveal>{t(c.title, lang)}</p>
+        <ul>
+          {c.items.map((item) => (
+            <li class="rule py-[0.55em] pr-[10%]" data-rule>
+              <span class="block" data-split>{t(item, lang)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</section>

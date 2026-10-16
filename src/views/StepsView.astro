@@ -1,0 +1,25 @@
+---
+import Intro from "../components/Intro.astro";
+import { STEPS } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+---
+
+<Intro text={t(STEPS.intro, lang)} prev={prev} next={next} />
+
+<ol class="grid-12 mt-[22svh] pb-[10svh]">
+  {
+    STEPS.steps.map((s, i) => (
+      <li class="rule col-span-4 flex py-[0.55em] md:col-start-7 md:col-span-6" data-rule>
+        <span class="w-[2.2em] shrink-0 text-muted tabular" data-reveal>{String(i + 1).padStart(2, "0")}</span>
+        <span data-split>{t(s, lang)}</span>
+      </li>
+    ))
+  }
+</ol>

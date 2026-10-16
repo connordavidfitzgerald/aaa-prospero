@@ -1,0 +1,136 @@
+---
+import { GUIDE_PAGES, GUIDE_SECTIONS, guideSrc } from "../data/guidelines";
+import { UI } from "../data/copy";
+import { href, t, type Lang } from "../lib/i18n";
+import PrevNext from "../components/PrevNext.astro";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+
+const sections = GUIDE_SECTIONS.map((s) => ({ ...s, label: t(s.label, lang) }));
+const sectionOf = (num: string) => sections.find((s) => s.key === num.split(".")[0])!;
+---
+
+<!--
+  CCAM guideline viewer. Two states on one route (Figma 16:13510 / 16:15209):
+  a grid of every page, and a full view with ← → and a section dropdown that
+  sits under the nav title (Figma 16:16934). The hash (#p12) holds the page.
+-->
+<div data-guide data-count={GUIDE_PAGES.length}>
+  <!-- Section switcher, aligned under the nav title. -->
+  <div class="pointer-events-none fixed inset-x-0 top-[calc(10px+var(--fs)*1.12)] z-[55] grid-12" data-guide-sub>
+    <div class="col-span-3 col-start-2 md:col-start-4 md:col-span-6 pl-[var(--num)]">
+      <button
+        type="button"
+        class="guide-sub-toggle pointer-events-auto invisible block overflow-hidden pb-[0.12em] -mb-[0.12em] opacity-0"
+        aria-expanded="false"
+        aria-controls="guide-sections"
+        data-guide-sub-toggle
+      >
+        <span data-guide-sub-label>{sections[0].label}</span>
+      </button>
+      <ul id="guide-sections" class="invisible pointer-events-auto text-paper" data-guide-sections>
+        {
+          sections.map((s) => (
+            <li>
+              <button type="button" class="guide-sec block" data-guide-goto={s.first} data-guide-sec={s.key}>
+                {s.label}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Grid state -->
+  <section class="pt-[var(--intro)]" data-guide-grid>
+    <div class="md:flex md:flex-col md:h-[calc(100svh-10px-var(--intro))]">
+    <!-- The gap above the grid gives way first so every page fits on one slide. -->
+    <div class="hidden md:block shrink basis-[calc(var(--fs)*9.6)] min-h-[calc(var(--fs)*1.4)]"></div>
+    <div class="grid-12 mt-[calc(var(--fs)*7)] md:mt-0">
+      <a href={href("work/ccam", lang)} class="link col-span-2" data-reveal>{t(UI.back, lang)}</a>
+      <div class="col-span-2 flex justify-end md:col-start-10 md:col-span-3">
+        <PrevNext prev={prev} next={next} />
+      </div>
+    </div>
+    <ul class="mt-[calc(var(--fs)*0.6)] grid grid-cols-3 gap-[10px] px-[10px] md:grid-cols-8">
+      {
+        GUIDE_PAGES.map((p) => (
+          <li data-reveal>
+            <button
+              type="button"
+              class="group block w-full"
+              data-guide-goto={p.n}
+              aria-label={`${p.num} ${p.title}`}
+            >
+              <img
+                src={guideSrc(p.n, true)}
+                alt=""
+                width="480"
+                height="270"
+                loading={p.n <= 16 ? "eager" : "lazy"}
+                decoding="async"
+                class="block aspect-video w-full object-cover grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+              />
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+    </div>
+  </section>
+
+  <!-- Full state -->
+  <section class="hidden pt-[var(--intro)]" data-guide-full>
+    <div class="grid-12">
+      <button type="button" class="link col-span-2 text-left" data-guide-close>{t(UI.allPages, lang)}</button>
+      <span class="col-span-1 text-right tabular text-muted md:col-start-10 md:col-span-1" data-guide-count></span>
+      <button type="button" class="link col-span-1 text-right md:col-start-11 md:text-left" aria-label="Previous" data-guide-prev>←</button>
+      <button type="button" class="link hidden text-right md:col-start-12 md:block" aria-label="Next" data-guide-next>→</button>
+    </div>
+    <div class="relative mx-[10px] mt-[calc(var(--fs)*1.4)] aspect-video overflow-hidden bg-current/5" data-guide-stage>
+    </div>
+    <button type="button" class="link mx-[10px] mt-[0.6em] md:hidden" data-guide-next-mobile>→</button>
+  </section>
+
+  <script
+    is:inline
+    type="application/json"
+    data-guide-pages
+    set:html={JSON.stringify(
+      GUIDE_PAGES.map((p) => ({ n: p.n, num: p.num, title: p.title, src: guideSrc(p.n), section: sectionOf(p.num).key })),
+    )}
+  />
+</div>
+
+<style>
+  /* Full view: the page is as large as the slide allows, centred. */
+  @media (width >= 48rem) {
+    [data-guide-stage] {
+      width: min(calc(100% - 20px), calc((100svh - var(--intro) - var(--fs) * 2.5 - 20px) * 16 / 9));
+      margin-inline: auto;
+    }
+  }
+  .guide-sub-toggle span {
+    display: block;
+    opacity: var(--muted);
+    transition: opacity 0.3s var(--ease-out);
+  }
+  .guide-sub-toggle:hover span,
+  .guide-sub-toggle[aria-expanded="true"] span {
+    opacity: 1;
+  }
+  .guide-sec {
+    opacity: var(--muted);
+    transition: opacity 0.3s var(--ease-out);
+  }
+  .guide-sec[aria-current="true"],
+  .guide-sec:hover {
+    opacity: 1;
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
+import { ANALYSIS } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+---
+
+<!--
+  After the proposal document (Figma FR 25): three readings under green
+  headings in columns 5–12, then the current site and two posters, sized to
+  one shared height.
+-->
+<Intro text={t(ANALYSIS.intro, lang)} prev={prev} next={next} />
+
+<section class="grid-12 mt-[10svh] pb-[10svh]">
+  <div class="col-span-4 md:col-start-5 md:col-span-8">
+    <ol class="grid gap-y-[calc(var(--fs)*2)] gap-x-[var(--gutter)] md:grid-cols-3">
+      {
+        ANALYSIS.angles.map((a) => (
+          <li class="md:pr-[8%]">
+            <p class="mb-[0.9em]" data-reveal><mark class="highlight">{t(a.title, lang)}</mark></p>
+            <p data-split>{t(a.text, lang)}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-[calc(var(--fs)*4)] grid grid-cols-2 gap-[var(--gutter)] md:grid-cols-[2224fr_662fr_667fr]">
+      {
+        ANALYSIS.media.map((m, i) => (
+          <Media
+            src={m.src}
+            alt={m.alt}
+            width={m.w}
+            height={m.h}
+            aspect={`${m.w} / ${m.h}`}
+            class={i === 0 ? "col-span-2 md:col-span-1" : undefined}
+            sizes={i === 0 ? "(width >= 48rem) 40vw, 100vw" : "(width >= 48rem) 12vw, 50vw"}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+

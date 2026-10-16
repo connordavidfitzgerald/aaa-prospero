@@ -1,0 +1,11 @@
+---
+import Intro from "../components/Intro.astro";
+interface Props {
+  text: string;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { text, prev, next } = Astro.props;
+---
+
+<Intro text={text} prev={prev} next={next} />

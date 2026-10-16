@@ -1,0 +1,239 @@
+{
+  "chimie": {
+    "client": "chimie",
+    "date": "2024",
+    "description": {
+      "en": "chimie is a Montreal-based sensory project cultivating curiosity and connection around scent, through workshops, gatherings, and collaborations. We developed their branding, built their website, and shaped a community-minded social strategy.",
+      "fr": "chimie est un projet sensoriel montréalais qui cultive la curiosité et les liens autour de l'odorat, à travers des ateliers, des rassemblements et des collaborations. Nous avons développé leur image de marque, conçu leur site web et façonné une stratégie sociale axée sur la communauté."
+    },
+    "services": {
+      "en": "Creative Direction, Strategy, Identity, Website, Photography",
+      "fr": "Direction créative, stratégie, identité, site web, photographie"
+    },
+    "links": [
+      {
+        "href": "https://chimiescent.com/",
+        "label": {
+          "en": "Website",
+          "fr": "Site web"
+        }
+      },
+      {
+        "href": "https://www.instagram.com/chimiescent/",
+        "label": {
+          "en": "Instagram",
+          "fr": "Instagram"
+        }
+      }
+    ],
+    "media": [
+      {
+        "kind": "image",
+        "src": "/media/chimie/01.jpg",
+        "w": 2048,
+        "h": 1536,
+        "alt": ""
+      },
+      {
+        "kind": "video",
+        "playbackId": "v501QTQrGX39mYOUvo7Nn01S3ka7Tu1KBKFO81ktgXn9M"
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/02.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/03.jpg",
+        "w": 839,
+        "h": 1118,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/04.jpg",
+        "w": 2400,
+        "h": 1800,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/05.jpg",
+        "w": 839,
+        "h": 1118,
+        "alt": "chimie, essence of five bottle."
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/06.jpg",
+        "w": 839,
+        "h": 1118,
+        "alt": "chimie, launch event, summer 2022."
+      },
+      {
+        "kind": "video",
+        "playbackId": "9tk02Yy8QotdvvWcCfsqubod4Oal3ENViC01qO00J6YO6o"
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/07.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/08.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/09.jpg",
+        "w": 839,
+        "h": 1118,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/10.jpg",
+        "w": 839,
+        "h": 1118,
+        "alt": ""
+      },
+      {
+        "kind": "video",
+        "playbackId": "37WQk2HUGJ3GW6hO2X1lRjYXTh8ZFHk7TaaylptVXuQ"
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/11.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/12.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/13.jpg",
+        "w": 2048,
+        "h": 1536,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/14.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      },
+      {
+        "kind": "image",
+        "src": "/media/chimie/15.jpg",
+        "w": 1800,
+        "h": 2400,
+        "alt": ""
+      }
+    ]
+  },
+  "ecozoic": {
+    "client": "Leadership for the Ecozoic",
+    "date": "2025",
+    "description": {
+      "en": "Identity and website for Leadership for the Ecozoic, a transdisciplinary research initiative based at McGill University and the University of Vermont, working toward a just and ecologically sustainable future.",
+      "fr": "Identité et site web pour Leadership for the Ecozoic, une initiative de recherche transdisciplinaire basée à l'Université McGill et à l'Université du Vermont, œuvrant pour un avenir juste et écologiquement durable."
+    },
+    "services": {
+      "en": "Identity, Website, Art Direction",
+      "fr": "Identité, site web, direction artistique"
+    },
+    "links": [
+      {
+        "href": "https://l4ecozoic.org/",
+        "label": {
+          "en": "Website",
+          "fr": "Site web"
+        }
+      },
+      {
+        "href": "https://www.instagram.com/leadershipfortheecozoic/",
+        "label": {
+          "en": "Instagram",
+          "fr": "Instagram"
+        }
+      }
+    ],
+    "media": [
+      {
+        "kind": "video",
+        "playbackId": "q3fbY9100adakR7QZRetPc02eCTYid9E00TprmAmla18S4",
+        "aspect": "1024 / 683"
+      },
+      {
+        "kind": "video",
+        "playbackId": "Q3T81EFbujaCk3diwagRcviKFeYGFfYiYTY00VW01qJhQ"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/01.jpg",
+        "w": 1500,
+        "h": 2000,
+        "alt": "Ecozoic"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/02.jpg",
+        "w": 1500,
+        "h": 2000,
+        "alt": "Ecozoic"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/03.jpg",
+        "w": 2400,
+        "h": 1600,
+        "alt": "Ecozoic"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/04.jpg",
+        "w": 1500,
+        "h": 2000,
+        "alt": "Ecozoic"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/05.jpg",
+        "w": 1500,
+        "h": 2000,
+        "alt": "Ecozoic"
+      },
+      {
+        "kind": "video",
+        "playbackId": "N00I4BmynmbwdiAgM9CMT2ytS01iZrMnBp6qqy112RZFM"
+      },
+      {
+        "kind": "video",
+        "playbackId": "g7KA7qdLhzoHFgfMwxAtEhEwodZ02ZG2o01omVxIFaIiQ",
+        "aspect": "256 / 171"
+      },
+      {
+        "kind": "image",
+        "src": "/media/eco/06.jpg",
+        "w": 2400,
+        "h": 1600,
+        "alt": "Ecozoic"
+      }
+    ]
+  }
+}

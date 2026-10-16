@@ -1,0 +1,115 @@
+---
+import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
+import { UI } from "../data/copy";
+import { href, t, type Lang } from "../lib/i18n";
+import { img } from "../lib/sanity";
+import type { Member } from "../lib/team";
+
+interface Props {
+  lang: Lang;
+  member: Member;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, member: m, prev, next } = Astro.props;
+
+const handle = (url: string) =>
+  url
+    .replace(/^https?:\/\/(www\.)?/, "")
+    .replace(/\/$/, "")
+    .replace(/^(instagram\.com|linkedin\.com\/in)\//, "@");
+
+const contact = [
+  m.email && { label: m.email, href: `mailto:${m.email}` },
+  m.instagram && { label: `Instagram ${handle(m.instagram)}`, href: m.instagram },
+  m.linkedin && { label: "LinkedIn", href: m.linkedin },
+].filter(Boolean) as { label: string; href: string }[];
+
+const meta = [
+  m.role && { label: t(UI.role, lang), value: [m.role] },
+  m.location && { label: t(UI.location, lang), value: [m.location] },
+  m.services.length && { label: t(UI.skills, lang), value: m.services },
+].filter(Boolean) as { label: string; value: string[] }[];
+---
+
+<Intro prev={prev} next={next}>
+  {
+    m.bio
+      .split(/\n\s*\n/)
+      .map((para) => para.trim())
+      .filter(Boolean)
+      .map((para, i) => (
+        <p class:list={[i > 0 && "mt-[1em]"]} data-split>
+          {para}
+        </p>
+      ))
+  }
+  <Fragment slot="aside">
+    <a href={href("team", lang)} class="link text-muted whitespace-nowrap" data-reveal>{t(UI.team, lang)}</a>
+  </Fragment>
+</Intro>
+
+<section class="grid-12 mt-[calc(var(--fs)*3)] gap-y-[calc(var(--fs)*3)] items-start">
+  <dl class="col-span-4 md:col-span-6 md:sticky md:top-[var(--intro)] order-2 md:order-1">
+    {
+      meta.map((row) => (
+        <div class="rule flex py-[0.55em]" data-rule>
+          <dt class="w-[var(--num)] shrink-0 text-muted" data-reveal>{row.label}</dt>
+          <dd data-reveal>
+            {row.value.map((v) => (
+              <span class="block">{v}</span>
+            ))}
+          </dd>
+        </div>
+      ))
+    }
+    {
+      contact.length > 0 && (
+        <div class="rule flex py-[0.55em]" data-rule>
+          <dt class="w-[var(--num)] shrink-0 text-muted" data-reveal>{t(UI.contactLabel, lang)}</dt>
+          <dd data-reveal>
+            {contact.map((c) => (
+              <a href={c.href} class="link block break-all" target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener">
+                {c.label}
+              </a>
+            ))}
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+
+  {
+    m.image && (
+      <Media
+        class="col-span-4 md:col-start-7 md:col-span-6 order-1 md:order-2"
+        src={img(m.image, 1400)}
+        alt={m.name}
+        aspect="4 / 5"
+        eager
+      />
+    )
+  }
+</section>
+
+{
+  m.videoPlaybackId && (
+    <section class="px-[10px] mt-[calc(var(--fs)*5)]" data-player>
+      <Media playbackId={m.videoPlaybackId} aspect={m.videoAspect ?? "16 / 9"} />
+      <div class="rule mt-[10px] grid grid-cols-4 md:grid-cols-12 gap-x-[10px] pt-[0.55em]" data-rule>
+        <button type="button" class="link text-left col-span-1 md:col-span-3" data-play data-on={t(UI.pause, lang)} data-off={t(UI.play, lang)}>
+          {t(UI.play, lang)}
+        </button>
+        <button type="button" class="link text-left col-span-1 md:col-span-3" data-mute data-on={t(UI.soundOff, lang)} data-off={t(UI.soundOn, lang)}>
+          {t(UI.soundOn, lang)}
+        </button>
+        <span class="col-span-2 md:col-span-6 text-right tabular" data-time>00:00 / 00:00</span>
+        <div class="col-span-4 md:col-span-12 relative mt-[0.55em] h-[14px] cursor-pointer" data-scrub>
+          <div class="absolute inset-x-0 top-1/2 h-px bg-current opacity-20"></div>
+          <div class="absolute left-0 top-1/2 h-px w-full origin-left scale-x-0 bg-current" data-progress></div>
+        </div>
+      </div>
+    </section>
+  )
+}

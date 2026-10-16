@@ -1,0 +1,46 @@
+---
+// An image (or Mux video) revealed with a clip wipe on entrance.
+interface Props {
+  src?: string;
+  playbackId?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  aspect?: string;
+  class?: string;
+  imgClass?: string;
+  eager?: boolean;
+  sizes?: string;
+}
+const { src, playbackId, alt = "", width, height, aspect, class: className, imgClass, eager, sizes } = Astro.props;
+const style = aspect ? `aspect-ratio: ${aspect}` : undefined;
+---
+
+<div class:list={["relative overflow-hidden", className]} style={style} data-media>
+  {
+    playbackId ? (
+      <mux-video
+        class:list={["block h-full w-full", imgClass]}
+        playback-id={playbackId}
+        poster={`https://image.mux.com/${playbackId}/thumbnail.webp?time=1&width=1600`}
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        data-autoplay
+      />
+    ) : (
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={sizes}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        class:list={["block h-full w-full object-cover", imgClass]}
+        draggable="false"
+      />
+    )
+  }
+</div>

@@ -1,0 +1,25 @@
+---
+// "← Previous  Next →": side by side from tablet up, stacked on phones.
+interface Props {
+  prev?: { href: string; label: string };
+  next?: { href: string; label: string };
+}
+const { prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <div class="flex flex-col items-end gap-[0.2em] whitespace-nowrap md:flex-row md:gap-[1em]">
+      {prev && (
+        <a href={prev.href} class="link" data-reveal data-prev-link>
+          {prev.label}
+        </a>
+      )}
+      {next && (
+        <a href={next.href} class="link" data-reveal data-next-link>
+          {next.label}
+        </a>
+      )}
+    </div>
+  )
+}

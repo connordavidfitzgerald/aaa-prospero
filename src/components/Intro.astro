@@ -1,0 +1,35 @@
+---
+// The intro row every page opens with (Figma y=76): a short paragraph across
+// columns 1–6 and "← Previous  Next →" set right in columns 10–12.
+import PrevNext from "./PrevNext.astro";
+
+interface Props {
+  text?: string;
+  prev?: { href: string; label: string };
+  next?: { href: string; label: string };
+  class?: string;
+}
+const { text, prev, next, class: className } = Astro.props;
+---
+
+<section class:list={["grid-12 pt-[var(--intro)]", className]}>
+  <div class="col-span-3 md:col-span-6">
+    {
+      text && (
+        <p data-split>
+          {text.split("\n").map((line, i) => (
+            <Fragment>
+              {i > 0 && <br />}
+              {line}
+            </Fragment>
+          ))}
+        </p>
+      )
+    }
+    <slot />
+  </div>
+  <div class="col-span-1 md:col-start-10 md:col-span-3 flex flex-col items-end gap-[0.2em] text-right">
+    <slot name="aside" />
+    <PrevNext prev={prev} next={next} />
+  </div>
+</section>

@@ -1,0 +1,127 @@
+---
+import { CHAPTERS, page, subPages, chapterHref } from "../data/pages";
+import { UI } from "../data/copy";
+import { href, t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  pageId: string;
+  num: string;
+  title: string;
+  altHref: string;
+}
+
+const { lang, pageId, num, title, altHref } = Astro.props;
+const isIndex = pageId === "index";
+---
+
+<header class="site-nav fixed inset-x-0 top-0 z-50" data-nav transition:persist={`nav-${lang}`}>
+  <div class="fixed inset-0 bg-slate/95 opacity-0 invisible" data-nav-overlay aria-hidden="true"></div>
+
+  <div class="relative grid-12 pt-[10px]">
+    <a href={href("", lang)} class="link col-span-1 md:col-span-3 whitespace-nowrap" data-nav-home>
+      <span class="hidden md:inline" data-home-label data-index={t(UI.index, lang)} data-title={t(UI.siteTitle, lang)}
+        >{isIndex ? t(UI.siteTitle, lang) : t(UI.index, lang)}</span
+      >
+      <span class="md:hidden">{t(UI.index, lang)}</span>
+    </a>
+
+    <div class="col-span-2 md:col-start-4 md:col-span-6 relative" data-nav-chapter>
+      <button
+        type="button"
+        class="flex w-full items-start transition-opacity duration-300"
+        class:list={[isIndex && "opacity-0 pointer-events-none"]}
+        aria-expanded="false"
+        aria-controls="site-menu"
+        data-nav-toggle
+      >
+        <span class="mask w-[var(--num)] shrink-0"><span class="block" data-nav-num>{num}</span></span>
+        <span class="mask min-w-0"><span class="block truncate" data-nav-title>{title}</span></span>
+      </button>
+
+      <nav
+        id="site-menu"
+        class="absolute left-0 top-full w-full max-h-[calc(100svh-60px)] overflow-y-auto hide-scrollbar pt-[calc(var(--fs)*1.4)] pb-10 invisible"
+        aria-label={t(UI.menu, lang)}
+        data-nav-menu
+        data-lenis-prevent
+      >
+        <ul class="text-paper">
+          <li data-menu-item>
+            <a href={href("", lang)} class="menu-link flex" data-menu-link="index">
+              <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.index, lang)}</span>
+            </a>
+          </li>
+          {
+            CHAPTERS.map((c) => (
+              <li class="mt-[calc(var(--fs)*0.9)]" data-menu-item>
+                <a
+                  href={href(chapterHref(c), lang)}
+                  class="menu-link flex"
+                  data-menu-link={page(c.pages[0]).num === c.num ? c.pages[0] : `chapter-${c.num}`}
+                  data-chapter
+                >
+                  <span class="w-[var(--num)] shrink-0">{c.num}</span>
+                  <span>{t(c.title, lang)}</span>
+                </a>
+                <ul>
+                  {subPages(c).map((p) => (
+                    <li data-menu-item>
+                      <a href={href(p.path, lang)} class="menu-link flex" data-menu-link={p.id}>
+                        <span class="w-[var(--num)] shrink-0">{p.num}</span>
+                        <span>{t(p.title, lang)}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+          <li class="mt-[calc(var(--fs)*0.9)]" data-menu-item>
+            <a href={href(page("contact").path, lang)} class="menu-link flex" data-menu-link="contact">
+              <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.contact, lang)}</span>
+            </a>
+          </li>
+          <li class="mt-[calc(var(--fs)*0.9)] md:hidden" data-menu-item>
+            <a href={altHref} class="menu-link flex" data-nav-lang-mobile>
+              <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.langLabel, lang)}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <a href={altHref} class="link hidden md:block md:col-start-11" data-nav-lang hreflang={lang === "fr" ? "en" : "fr"}
+      >{t(UI.langLabel, lang)}</a
+    >
+    <a href={href("contact", lang)} class="link col-start-4 md:col-start-12 justify-self-end" data-menu-link="contact-top"
+      >{t(UI.contact, lang)}</a
+    >
+  </div>
+</header>
+
+<style>
+  /* Text masks for the rolling nav label; the padding keeps descenders. */
+  .mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  .menu-link {
+    opacity: var(--muted);
+    transition: opacity 0.3s var(--ease-out);
+  }
+  .menu-link[data-chapter],
+  .menu-link[aria-current="page"] {
+    opacity: 1;
+  }
+  @media (hover: hover) {
+    [data-nav-menu]:has(.menu-link:hover) .menu-link {
+      opacity: var(--muted);
+    }
+    [data-nav-menu] .menu-link:hover {
+      opacity: 1;
+    }
+  }
+</style>

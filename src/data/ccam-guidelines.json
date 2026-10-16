@@ -1,0 +1,260 @@
+[
+ {
+  "n": 1,
+  "num": "0.0",
+  "section": "Cover",
+  "title": "Cover"
+ },
+ {
+  "n": 2,
+  "num": "0.1",
+  "section": "Mission",
+  "title": "Mission"
+ },
+ {
+  "n": 3,
+  "num": "0.2",
+  "section": "Introduction",
+  "title": "Introduction"
+ },
+ {
+  "n": 4,
+  "num": "0.3",
+  "section": "Contents",
+  "title": "Contents"
+ },
+ {
+  "n": 5,
+  "num": "1.0",
+  "section": "The season",
+  "title": "The season"
+ },
+ {
+  "n": 6,
+  "num": "1.1",
+  "section": "The season",
+  "title": "Overview"
+ },
+ {
+  "n": 7,
+  "num": "1.2",
+  "section": "The season",
+  "title": "Programme"
+ },
+ {
+  "n": 8,
+  "num": "1.3",
+  "section": "The season",
+  "title": "Tone"
+ },
+ {
+  "n": 9,
+  "num": "2.0",
+  "section": "Season title",
+  "title": "Season title"
+ },
+ {
+  "n": 10,
+  "num": "2.1",
+  "section": "Season title",
+  "title": "Title lockup"
+ },
+ {
+  "n": 11,
+  "num": "2.2",
+  "section": "Season title",
+  "title": "Title in type"
+ },
+ {
+  "n": 12,
+  "num": "2.3",
+  "section": "Season title",
+  "title": "Season label"
+ },
+ {
+  "n": 13,
+  "num": "2.4",
+  "section": "Season title",
+  "title": "Event titles"
+ },
+ {
+  "n": 14,
+  "num": "2.5",
+  "section": "Season title",
+  "title": "CCAM logo"
+ },
+ {
+  "n": 15,
+  "num": "2.6",
+  "section": "Season title",
+  "title": "What to avoid"
+ },
+ {
+  "n": 16,
+  "num": "3.0",
+  "section": "Colour",
+  "title": "Colour"
+ },
+ {
+  "n": 17,
+  "num": "3.1",
+  "section": "Colour",
+  "title": "Palette"
+ },
+ {
+  "n": 18,
+  "num": "3.2",
+  "section": "Colour",
+  "title": "Contrast"
+ },
+ {
+  "n": 19,
+  "num": "3.3",
+  "section": "Colour",
+  "title": "Proportion"
+ },
+ {
+  "n": 20,
+  "num": "3.4",
+  "section": "Colour",
+  "title": "Pairings"
+ },
+ {
+  "n": 21,
+  "num": "4.0",
+  "section": "Typography",
+  "title": "Typography"
+ },
+ {
+  "n": 22,
+  "num": "4.1",
+  "section": "Typography",
+  "title": "Animo"
+ },
+ {
+  "n": 23,
+  "num": "4.2",
+  "section": "Typography",
+  "title": "Animo scale"
+ },
+ {
+  "n": 24,
+  "num": "4.3",
+  "section": "Typography",
+  "title": "Inter"
+ },
+ {
+  "n": 25,
+  "num": "4.4",
+  "section": "Typography",
+  "title": "Inter scale"
+ },
+ {
+  "n": 26,
+  "num": "4.5",
+  "section": "Typography",
+  "title": "Pairing"
+ },
+ {
+  "n": 27,
+  "num": "4.6",
+  "section": "Typography",
+  "title": "What to avoid"
+ },
+ {
+  "n": 28,
+  "num": "5.0",
+  "section": "Graphic elements",
+  "title": "Graphic elements"
+ },
+ {
+  "n": 29,
+  "num": "5.1",
+  "section": "Graphic elements",
+  "title": "Date tags"
+ },
+ {
+  "n": 30,
+  "num": "5.2",
+  "section": "Graphic elements",
+  "title": "Rules & lists"
+ },
+ {
+  "n": 31,
+  "num": "5.3",
+  "section": "Graphic elements",
+  "title": "Oversized type"
+ },
+ {
+  "n": 32,
+  "num": "6.0",
+  "section": "Layout",
+  "title": "Layout"
+ },
+ {
+  "n": 33,
+  "num": "6.1",
+  "section": "Layout",
+  "title": "Instagram grid"
+ },
+ {
+  "n": 34,
+  "num": "6.2",
+  "section": "Layout",
+  "title": "Post templates"
+ },
+ {
+  "n": 35,
+  "num": "6.3",
+  "section": "Layout",
+  "title": "Poster formats"
+ },
+ {
+  "n": 36,
+  "num": "7.0",
+  "section": "Applications",
+  "title": "Applications"
+ },
+ {
+  "n": 37,
+  "num": "7.1",
+  "section": "Applications",
+  "title": "Instagram series"
+ },
+ {
+  "n": 38,
+  "num": "7.2",
+  "section": "Applications",
+  "title": "Posters"
+ },
+ {
+  "n": 39,
+  "num": "8.0",
+  "section": "Voice",
+  "title": "Voice"
+ },
+ {
+  "n": 40,
+  "num": "8.1",
+  "section": "Voice",
+  "title": "Principles"
+ },
+ {
+  "n": 41,
+  "num": "8.2",
+  "section": "Voice",
+  "title": "In practice"
+ },
+ {
+  "n": 42,
+  "num": "8.3",
+  "section": "Voice",
+  "title": "Copy checklist"
+ },
+ {
+  "n": 43,
+  "num": "8.4",
+  "section": "Back cover",
+  "title": "Back cover"
+ }
+]

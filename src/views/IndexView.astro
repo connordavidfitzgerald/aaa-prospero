@@ -1,0 +1,69 @@
+---
+import { CHAPTERS, subPages, chapterHref } from "../data/pages";
+import { INDEX } from "../data/copy";
+import PrevNext from "../components/PrevNext.astro";
+import { href, t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+const intro = t(INDEX.intro, lang);
+---
+
+<!-- On desktop the index starts on the nav line itself, in the columns the
+     (hidden) chapter toggle occupies, as if the dropdown were left open. The
+     intro narrows to columns 1–3 beside it and keeps the usual intro row, as
+     does "← Previous  Next →". The hover preview sits on the nav line too, in columns
+     8–10, up to the language switcher. -->
+<section class="grid-12 pt-[var(--intro)] md:pt-[10px] [--intro-gap:calc(var(--intro)-10px)]">
+  <div class="col-span-3 md:row-start-1 md:col-span-3 md:pt-[var(--intro-gap)]">
+    <p data-split>
+      {
+        intro.split("\n").map((line, i) => (
+          <Fragment>
+            {i > 0 && <br />}
+            {line}
+          </Fragment>
+        ))
+      }
+    </p>
+  </div>
+
+  <div class="col-start-2 col-span-2 row-start-2 mt-[18svh] md:row-start-1 md:col-start-4 md:col-span-4 md:mt-0">
+    <ol class="dim-list" data-preview-list>
+      {
+        CHAPTERS.map((c) => (
+          <li class="mb-[calc(var(--fs)*0.9)]" data-row data-reveal>
+            <a href={href(chapterHref(c), lang)} class="flex">
+              <span class="w-[var(--num)] shrink-0">{c.num}</span>
+              <span>{t(c.title, lang)}</span>
+            </a>
+            {subPages(c).map((p) => (
+              <a href={href(p.path, lang)} class="flex text-muted transition-opacity duration-300 hover:opacity-100">
+                <span class="w-[var(--num)] shrink-0">{p.num}</span>
+                <span>{t(p.title, lang)}</span>
+              </a>
+            ))}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <!-- Hover preview of the page under the cursor (live, scaled down). -->
+  <div
+    class="hidden self-start md:sticky md:top-[10px] md:row-start-1 md:col-start-8 md:col-span-3 md:block"
+    aria-hidden="true"
+  >
+    <div class="relative aspect-[16/10] overflow-hidden" data-preview-frame></div>
+  </div>
+
+  <div
+    class="col-start-4 row-start-1 flex flex-col items-end self-start text-right md:mt-[var(--intro-gap)] md:col-start-11 md:col-span-2"
+  >
+    <PrevNext prev={prev} next={next} />
+  </div>
+</section>

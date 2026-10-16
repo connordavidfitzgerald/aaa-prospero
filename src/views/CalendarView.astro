@@ -1,0 +1,50 @@
+---
+import Intro from "../components/Intro.astro";
+import { CALENDAR } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+}
+const { lang, prev, next } = Astro.props;
+---
+
+<Intro text={t(CALENDAR.intro, lang)} prev={prev} next={next} />
+
+<section class="mt-[22svh] pb-[10svh]">
+  <ol class="grid-12 gap-y-[calc(var(--fs)*2)]">
+    {
+      CALENDAR.months.map((m) => (
+        <li class="rule col-span-2 pt-[0.55em]" data-rule>
+          <p data-reveal>{t(m.month, lang)}</p>
+          <p class="mt-[2.4em] pr-[10%] text-muted" data-split>{t(m.text, lang)}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="grid-12 mt-[calc(var(--fs)*4)] gap-y-[0.8em]">
+    {
+      CALENDAR.bands.map((b) => (
+        <div
+          class="col-span-4"
+          style={`--from:${b.span[0]};--to:${b.span[1] + 1}`}
+          data-band
+        >
+          <div class="h-[2px] origin-left bg-current" data-bar></div>
+          <p class="mt-[0.5em]" data-reveal>{t(b.label, lang)}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  @media (width >= 48rem) {
+    [data-band] {
+      grid-column: var(--from) / var(--to);
+    }
+  }
+</style>

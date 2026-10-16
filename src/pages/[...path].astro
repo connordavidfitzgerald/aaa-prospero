@@ -1,0 +1,146 @@
+---
+// Every page of the site, in both languages, from one route. FR lives at the
+// root and EN under /en; paths come from src/data/pages.ts plus one bio page
+// per team member.
+import type { GetStaticPaths } from "astro";
+import Layout from "../layouts/Layout.astro";
+import IndexView from "../views/IndexView.astro";
+import AboutView from "../views/AboutView.astro";
+import TeamView from "../views/TeamView.astro";
+import MemberView from "../views/MemberView.astro";
+import WorkView from "../views/WorkView.astro";
+import ProjectView from "../views/ProjectView.astro";
+import GuidelinesView from "../views/GuidelinesView.astro";
+import TextView from "../views/TextView.astro";
+import ProcessView from "../views/ProcessView.astro";
+import PhasesView from "../views/PhasesView.astro";
+import ColumnsView from "../views/ColumnsView.astro";
+import CalendarView from "../views/CalendarView.astro";
+import TableView from "../views/TableView.astro";
+import AnalysisView from "../views/AnalysisView.astro";
+import StepsView from "../views/StepsView.astro";
+import ContactView from "../views/ContactView.astro";
+import { PAGES, page, nextPage, prevPage, type Page } from "../data/pages";
+import { UI, CCAM, HEARD, COLUMNS, BUDGETS } from "../data/copy";
+import { LANGS, href, t, type Lang } from "../lib/i18n";
+import { getTeam, type Member } from "../lib/team";
+import { getProject } from "../lib/projects";
+import { img } from "../lib/sanity";
+
+type PageProps = { lang: Lang; page: Page; member?: Member; memberIndex?: number };
+
+export const getStaticPaths = (async () => {
+  const paths = [];
+  for (const lang of LANGS) {
+    const prefix = lang === "en" ? "en" : "";
+    const join = (p: string) => [prefix, p].filter(Boolean).join("/") || undefined;
+    for (const p of PAGES) {
+      paths.push({ params: { path: join(p.path) }, props: { lang, page: p } satisfies PageProps });
+    }
+    const team = await getTeam(lang);
+    team.forEach((member, memberIndex) => {
+      paths.push({
+        params: { path: join(`team/${member.slug}`) },
+        props: { lang, page: page("team"), member, memberIndex } satisfies PageProps,
+      });
+    });
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { lang, page: p, member, memberIndex } = Astro.props as PageProps;
+const other: Lang = lang === "fr" ? "en" : "fr";
+
+const nextLabel = t(UI.next, lang);
+const prevLabel = t(UI.prev, lang);
+const nxt = nextPage(p.id);
+const prv = prevPage(p.id);
+const next = { href: href(nxt.path, lang), label: nxt.id === "index" ? `${t(UI.index, lang)} →` : nextLabel };
+const prev = { href: href(prv.path, lang), label: prv.id === "index" ? `← ${t(UI.index, lang)}` : prevLabel };
+
+// Member pages: nav shows "1.2 <name>", Next cycles through the roster.
+const team = p.view === "team" ? await getTeam(lang) : [];
+let num = p.num;
+let title = t(p.title, lang);
+let path = p.path;
+let memberNext = next;
+let memberPrev = prev;
+if (member && memberIndex !== undefined) {
+  title = member.name;
+  path = `team/${member.slug}`;
+  const nm = team[(memberIndex + 1) % team.length];
+  const pm = team[(memberIndex - 1 + team.length) % team.length];
+  memberNext = { href: href(`team/${nm.slug}`, lang), label: nextLabel };
+  memberPrev = { href: href(`team/${pm.slug}`, lang), label: prevLabel };
+}
+
+// Portfolio data
+const ecozoic = p.id === "ecozoic" || p.id === "work" ? await getProject("ecozoic", lang) : undefined;
+const ecoImages = ecozoic?.media.filter((m) => m.kind === "image") ?? [];
+const thumbs = ecozoic
+  ? [
+      { key: "ccam", name: "CCAM", href: href("work/ccam", lang), src: "/media/ccam/subway.jpg" },
+      { key: "ecozoic", name: "Ecozoic", href: href("work/ecozoic", lang), src: img(ecozoic.cover, 900) },
+      { key: "ccam", name: "CCAM", href: href("work/ccam", lang), src: "/media/ccam/poster-landscape.jpg" },
+      {
+        key: "ecozoic",
+        name: "Ecozoic",
+        href: href("work/ecozoic", lang),
+        src: img(ecoImages.find((m) => m.kind === "image" && (m.w ?? 0) > (m.h ?? 0))?.src ?? ecozoic.cover, 900),
+      },
+    ]
+  : [];
+---
+
+<Layout
+  lang={lang}
+  pageId={member ? `member-${member.slug}` : p.id}
+  num={num}
+  title={title}
+  altHref={href(path, other)}
+  prevHref={member ? memberPrev.href : prev.href}
+  nextHref={member ? memberNext.href : next.href}
+  theme={p.theme}
+>
+  {p.view === "index" && <IndexView lang={lang} prev={prev} next={next} />}
+  {p.view === "about" && <AboutView lang={lang} prev={prev} next={next} />}
+  {p.view === "team" && !member && <TeamView lang={lang} prev={prev} next={next} members={team} />}
+  {member && <MemberView lang={lang} member={member} prev={memberPrev} next={memberNext} />}
+  {p.view === "work" && <WorkView lang={lang} prev={prev} next={next} thumbs={thumbs} />}
+  {
+    p.id === "ccam" && (
+      <ProjectView
+        lang={lang}
+        media={CCAM.media.map((m) => ({ kind: "image" as const, ...m }))}
+        description={t(CCAM.description, lang)}
+        services={t(CCAM.services, lang)}
+        links={[{ label: t(UI.viewGuidelines, lang), href: href("work/ccam/guidelines", lang), internal: true }]}
+        prev={prev}
+        next={next}
+      />
+    )
+  }
+  {
+    p.id === "ecozoic" && ecozoic && (
+      <ProjectView
+        lang={lang}
+        media={ecozoic.media.map((m) => (m.kind === "image" ? { ...m, src: img(m.src, 1800) } : m))}
+        description={ecozoic.description}
+        services={ecozoic.services}
+        links={ecozoic.links.map((l) => ({ label: `${l.label} ↗`, href: l.href }))}
+        prev={prev}
+        next={next}
+      />
+    )
+  }
+  {p.view === "guidelines" && <GuidelinesView lang={lang} prev={prev} next={next} />}
+  {p.view === "text" && <TextView text={t(HEARD.intro, lang)} prev={prev} next={next} />}
+  {p.view === "process" && <ProcessView lang={lang} prev={prev} next={next} />}
+  {p.view === "phases" && <PhasesView lang={lang} prev={prev} next={next} />}
+  {p.view === "columns" && <ColumnsView lang={lang} data={COLUMNS[p.id]} prev={prev} next={next} />}
+  {p.view === "calendar" && <CalendarView lang={lang} prev={prev} next={next} />}
+  {p.view === "table" && <TableView lang={lang} data={BUDGETS[p.id]} prev={prev} next={next} />}
+  {p.view === "analysis" && <AnalysisView lang={lang} prev={prev} next={next} />}
+  {p.view === "steps" && <StepsView lang={lang} prev={prev} next={next} />}
+  {p.view === "contact" && <ContactView lang={lang} prev={prev} next={next} />}
+</Layout>

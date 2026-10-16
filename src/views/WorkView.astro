@@ -1,0 +1,74 @@
+---
+import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
+import { WORK } from "../data/copy";
+import { t, type Lang } from "../lib/i18n";
+
+export interface WorkThumb {
+  src: string;
+  href: string;
+  name: string;
+  key: string;
+}
+
+interface Props {
+  lang: Lang;
+  prev: { href: string; label: string };
+  next: { href: string; label: string };
+  thumbs: WorkThumb[];
+}
+const { lang, prev, next, thumbs } = Astro.props;
+const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
+---
+
+<Intro text={t(WORK.intro, lang)} prev={prev} next={next} />
+
+<section
+  class="relative flex min-h-[calc(100svh-var(--intro)-var(--fs)*3)] items-center justify-center px-[10px] py-[calc(var(--fs)*3)]"
+  data-work
+>
+  <ul class="grid w-full grid-cols-2 gap-[10px] md:flex md:w-auto md:justify-center">
+    {
+      thumbs.map((th, i) => (
+        <li class="md:w-[18vw]" data-work-item={th.key}>
+          <a href={th.href} class="block" aria-label={th.name}>
+            <Media src={th.src} alt={th.name} aspect="3 / 2" imgClass="work-img" eager={i < 4} />
+            <span class="mt-[0.4em] block text-muted md:hidden">{th.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- The hovered project's name, set huge across the row (Figma 16:8372). -->
+  <div class="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex" aria-hidden="true">
+    {
+      names.map(([key, name]) => (
+        <p
+          class="absolute whitespace-nowrap text-[11.5vw] leading-[0.8] tracking-[-0.05em] text-ink opacity-0"
+          data-work-name={key}
+        >
+          {name}
+        </p>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  /* SplitText's per-letter masks clip on both axes; with the tight tracking
+     that shaves the sides off neighbouring letters. Clip vertically only. */
+  [data-work-name] > :global(div) {
+    overflow-x: visible !important;
+    overflow-y: clip !important;
+  }
+  :global(.work-img) {
+    filter: grayscale(1);
+    transition: filter 0.6s var(--ease-out);
+  }
+  @media (hover: hover) {
+    [data-work-item]:hover :global(.work-img) {
+      filter: grayscale(0);
+    }
+  }
+</style>
