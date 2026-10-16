@@ -26,8 +26,8 @@ export interface Page {
   path: string;
   title: L;
   view: View;
-  /** "media": full-bleed imagery under white text. */
-  theme?: "dark" | "media";
+  /** "media": full-bleed imagery under white text. "green": the closing contact page. */
+  theme?: "dark" | "media" | "green";
 }
 
 export interface Chapter {
@@ -68,7 +68,7 @@ export const PAGES: Page[] = [
 
   { id: "analysis", num: "5", path: "brand-analysis", title: { fr: "Analyse de la marque", en: "Brand analysis" }, view: "analysis" },
   { id: "next-steps", num: "6", path: "next-steps", title: { fr: "Prochaines étapes", en: "Next steps" }, view: "steps" },
-  { id: "contact", num: "", path: "contact", title: { fr: "Contact", en: "Contact" }, view: "contact" },
+  { id: "contact", num: "", path: "contact", title: { fr: "Contact", en: "Contact" }, view: "contact", theme: "green" },
 ];
 
 export const CHAPTERS: Chapter[] = [

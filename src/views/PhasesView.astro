@@ -17,7 +17,7 @@ const label = (v: string | { fr: string; en: string }) => (typeof v === "string"
   <p class="mt-[1em] text-muted" data-split>{t(PHASES.outro, lang)}</p>
 </Intro>
 
-<ol class="mt-[22svh] dim-list">
+<ol class="mt-[22svh] hl-list [--hl-x:10px]">
   {
     PHASES.rows.map((r) => (
       <li data-row>

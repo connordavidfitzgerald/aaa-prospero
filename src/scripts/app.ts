@@ -326,6 +326,20 @@ function initTeam(main: HTMLElement) {
   teardown.push(() => offs.forEach((off) => off()));
 }
 
+/* ---------------------------------------------------------- Row links */
+
+// Table rows can't be wrapped in a link, so a row with data-row-href opens
+// its page when clicked anywhere; its label carries the real <a>.
+function initRowLinks(main: HTMLElement) {
+  const click = (e: MouseEvent) => {
+    const row = (e.target as Element).closest<HTMLElement>("[data-row-href]");
+    if (!row || (e.target as Element).closest("a") || getSelection()?.toString()) return;
+    navigate(row.dataset.rowHref!);
+  };
+  main.addEventListener("click", click);
+  teardown.push(() => main.removeEventListener("click", click));
+}
+
 /* -------------------------------------------------------- Work index */
 
 function initWork(main: HTMLElement) {
@@ -388,63 +402,55 @@ function initWork(main: HTMLElement) {
 
 /* ------------------------------------------------- Project media strip */
 
-// Clicking the left or right half of the screen steps one image back or
-// forward; the cursor shows which way. The wheel still scrolls sideways.
+// Clicking (or tapping) the left or right half of the screen steps one image
+// back or forward; the cursor shows which way. The arrow keys step too. The
+// strip doesn't scroll by itself: no wheel, trackpad or swipe.
 let stripStep: ((dir: number) => boolean) | null = null;
 function initStrip(main: HTMLElement) {
   const strip = main.querySelector<HTMLElement>("[data-strip]");
   if (!strip) return;
-  const coarse = matchMedia("(pointer: coarse)").matches;
-  let target = strip.scrollLeft;
-  const max = () => strip.scrollWidth - strip.clientWidth;
-  const to = (x: number) => {
-    target = gsap.utils.clamp(0, max(), x);
-    // Touch screens snap the strip, which would fight a tween.
-    if (coarse) strip.scrollTo({ left: target, behavior: reduced ? "auto" : "smooth" });
-    else gsap.to(strip, { scrollLeft: target, duration: reduced ? 0 : 0.9, ease: "power3.out", overwrite: true });
-  };
-
-  // Vertical wheel scrolls the strip sideways.
-  const onWheel = (e: WheelEvent) => {
-    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (!max()) return;
-    e.preventDefault();
-    to(target + d * 1.2);
-  };
-
   const count = strip.children.length;
-  const current = () => Math.round(target / strip.clientWidth);
+  let index = 0;
+  const go = (n: number) => {
+    index = n;
+    gsap.to(strip, { scrollLeft: n * strip.clientWidth, duration: reduced ? 0 : 0.9, ease: "power3.out", overwrite: true });
+  };
+
   const dirAt = (x: number) => {
     const dir = x < innerWidth / 2 ? -1 : 1;
-    const n = current() + dir;
+    const n = index + dir;
     return n >= 0 && n < count ? dir : 0;
   };
   const onClick = (e: MouseEvent) => {
     if (closeOpenMenu) return;
     const dir = dirAt(e.clientX);
-    if (dir) to((current() + dir) * strip.clientWidth);
+    if (dir) go(index + dir);
     strip.dataset.dir = String(dirAt(e.clientX));
   };
   const onMove = (e: PointerEvent) => {
     if (e.pointerType === "mouse") strip.dataset.dir = String(dirAt(e.clientX));
   };
-  const onScroll = () => {
-    if (!gsap.isTweening(strip)) target = strip.scrollLeft;
+  // Keep the current image in place when the window changes size.
+  const onResize = () => {
+    gsap.killTweensOf(strip);
+    strip.scrollLeft = index * strip.clientWidth;
   };
 
   // The arrow keys step through the media first, then on to the next page.
   stripStep = (dir) => {
-    const n = current() + dir;
+    const n = index + dir;
     if (n < 0 || n >= count) return false;
-    to(n * strip.clientWidth);
+    go(n);
     return true;
   };
-  teardown.push(() => (stripStep = null));
 
-  strip.addEventListener("wheel", onWheel, { passive: false });
   strip.addEventListener("click", onClick);
   strip.addEventListener("pointermove", onMove);
-  strip.addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onResize);
+  teardown.push(() => {
+    stripStep = null;
+    removeEventListener("resize", onResize);
+  });
 }
 
 /* ------------------------------------------------- Project +Info panel */
@@ -826,6 +832,7 @@ document.addEventListener("astro:page-load", () => {
 
   teardown.push(initEntrances(main));
   initTeam(main);
+  initRowLinks(main);
   initPreview(main);
   initWork(main);
   initStrip(main);

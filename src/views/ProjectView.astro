@@ -1,8 +1,7 @@
 ---
 import Media from "../components/Media.astro";
-import PrevNext from "../components/PrevNext.astro";
 import { UI } from "../data/copy";
-import { href, t, type Lang } from "../lib/i18n";
+import { t, type Lang } from "../lib/i18n";
 import type { Media as M } from "../lib/projects";
 
 interface Props {
@@ -11,10 +10,10 @@ interface Props {
   description: string;
   services?: string;
   links: { label: string; href: string; internal?: boolean }[];
-  prev: { href: string; label: string };
+  back: { href: string; label: string };
   next: { href: string; label: string };
 }
-const { lang, media, description, services, links, prev, next } = Astro.props;
+const { lang, media, description, services, links, back, next } = Astro.props;
 
 /** Width over height, when known. */
 function ratio(m: M) {
@@ -28,13 +27,13 @@ function ratio(m: M) {
 <!--
   Project view: a horizontal strip of full-screen media behind the nav, white
   text on top. +Info (bottom-left) opens the description over a dark scrim;
-  links sit beside it; Prev / Next bottom-right, all on one bottom line in the
-  grid. Clicking the left or right half of the screen steps through the media;
-  the wheel scrolls the strip sideways.
+  links sit beside it; Back to projects / Next bottom-right, all on one bottom line in the
+  grid. Clicking or tapping the left or right half of the screen steps through
+  the media, as do the arrow keys; the strip doesn't scroll on its own.
 -->
 <section class="fixed inset-0 text-paper" data-pinned>
   <div
-    class="hide-scrollbar flex h-full overflow-x-auto overscroll-x-contain pointer-coarse:snap-x pointer-coarse:snap-mandatory"
+    class="flex h-full overflow-hidden"
     data-strip
     data-lenis-prevent
   >
@@ -52,9 +51,9 @@ function ratio(m: M) {
         const r = ratio(m);
         const portrait = r !== undefined && r < 1;
         return m.kind === "image" && !portrait ? (
-          <Media class="h-full w-screen shrink-0 snap-start" sizes="100vw" {...props} />
+          <Media class="h-full w-screen shrink-0" sizes="100vw" {...props} />
         ) : (
-          <div class="grid-12 h-full w-screen shrink-0 snap-start bg-ink py-(--intro)">
+          <div class="grid-12 h-full w-screen shrink-0 bg-ink py-(--intro)">
             <Media
               class:list={["col-span-4 h-full", portrait ? "md:col-span-6 md:col-start-4" : "md:col-span-10 md:col-start-2"]}
               fit="contain"
@@ -70,11 +69,6 @@ function ratio(m: M) {
   <!-- Soft scrims so the white type holds on light images. -->
   <div class="pointer-events-none absolute inset-x-0 top-0 h-[120px] bg-linear-to-b from-black/30 to-transparent"></div>
   <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[180px] bg-linear-to-t from-black/35 to-transparent"></div>
-
-  <!-- Back to the project index, under the nav's Index link. -->
-  <div class="pointer-events-none absolute inset-x-0 top-(--intro) grid-12">
-    <a href={href("work", lang)} class="link pointer-events-auto col-span-2 justify-self-start" data-reveal>{t(UI.back, lang)}</a>
-  </div>
 
   <div class="invisible absolute inset-0 bg-ink/75" data-info-overlay aria-hidden="true"></div>
   <div
@@ -114,8 +108,10 @@ function ratio(m: M) {
         ))
       }
     </div>
-    <div class="col-span-1 justify-self-end md:col-start-10 md:col-span-3">
-      <PrevNext prev={prev} next={next} />
+    <!-- Back in column 10, Next against the right edge; stacked on phones. -->
+    <div class="col-span-1 grid justify-self-end justify-items-end gap-y-[0.2em] whitespace-nowrap md:col-start-10 md:justify-self-stretch md:col-span-3 md:grid-cols-3 md:gap-x-(--gutter)">
+      <a href={back.href} class="link md:col-span-2 md:justify-self-start" data-reveal>{back.label}</a>
+      <a href={next.href} class="link md:col-start-3" data-reveal data-next-link>{next.label}</a>
     </div>
   </div>
 </section>

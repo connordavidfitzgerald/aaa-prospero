@@ -28,36 +28,8 @@
     ],
     "media": [
       {
-        "kind": "image",
-        "src": "/media/chimie/01.jpg",
-        "w": 2048,
-        "h": 1536,
-        "alt": ""
-      },
-      {
         "kind": "video",
         "playbackId": "v501QTQrGX39mYOUvo7Nn01S3ka7Tu1KBKFO81ktgXn9M"
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/02.jpg",
-        "w": 1800,
-        "h": 2400,
-        "alt": ""
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/03.jpg",
-        "w": 839,
-        "h": 1118,
-        "alt": ""
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/04.jpg",
-        "w": 2400,
-        "h": 1800,
-        "alt": ""
       },
       {
         "kind": "image",
@@ -76,20 +48,6 @@
       {
         "kind": "video",
         "playbackId": "9tk02Yy8QotdvvWcCfsqubod4Oal3ENViC01qO00J6YO6o"
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/07.jpg",
-        "w": 1800,
-        "h": 2400,
-        "alt": ""
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/08.jpg",
-        "w": 1800,
-        "h": 2400,
-        "alt": ""
       },
       {
         "kind": "image",
@@ -128,20 +86,6 @@
         "src": "/media/chimie/13.jpg",
         "w": 2048,
         "h": 1536,
-        "alt": ""
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/14.jpg",
-        "w": 1800,
-        "h": 2400,
-        "alt": ""
-      },
-      {
-        "kind": "image",
-        "src": "/media/chimie/15.jpg",
-        "w": 1800,
-        "h": 2400,
         "alt": ""
       }
     ]
@@ -192,28 +136,7 @@
       },
       {
         "kind": "image",
-        "src": "/media/eco/02.jpg",
-        "w": 1500,
-        "h": 2000,
-        "alt": "Ecozoic"
-      },
-      {
-        "kind": "image",
-        "src": "/media/eco/03.jpg",
-        "w": 2400,
-        "h": 1600,
-        "alt": "Ecozoic"
-      },
-      {
-        "kind": "image",
         "src": "/media/eco/04.jpg",
-        "w": 1500,
-        "h": 2000,
-        "alt": "Ecozoic"
-      },
-      {
-        "kind": "image",
-        "src": "/media/eco/05.jpg",
         "w": 1500,
         "h": 2000,
         "alt": "Ecozoic"
@@ -226,13 +149,6 @@
         "kind": "video",
         "playbackId": "g7KA7qdLhzoHFgfMwxAtEhEwodZ02ZG2o01omVxIFaIiQ",
         "aspect": "256 / 171"
-      },
-      {
-        "kind": "image",
-        "src": "/media/eco/06.jpg",
-        "w": 2400,
-        "h": 1600,
-        "alt": "Ecozoic"
       }
     ]
   }

@@ -50,12 +50,16 @@ html {
   text-rendering: optimizeLegibility;
 }
 html[data-theme="dark"] {
-  --bg: var(--color-slate);
-  --fg: var(--color-paper);
+  --bg: var(--color-green);
+  --fg: var(--color-ink);
 }
 html[data-theme="media"] {
   --bg: var(--color-ink);
   --fg: var(--color-paper);
+}
+html[data-theme="green"] {
+  --bg: var(--color-green);
+  --fg: var(--color-ink);
 }
 /* The fixed nav only catches clicks on its own controls, so content set on
    the nav line (the homepage index) stays clickable. In the base layer so
@@ -68,9 +72,9 @@ html[data-theme="media"] {
     pointer-events: auto;
   }
 }
-/* While the chapter dropdown is open the nav sits on the slate overlay. */
+/* While the chapter dropdown is open the nav sits on the green overlay. */
 html[data-nav-open] .site-nav {
-  color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 body {
@@ -158,6 +162,25 @@ button {
   }
 }
 
+/* Hover highlight for lists in the pages, like the team rows: a green bar
+   drops over the hovered row from the top and lifts off toward the bottom.
+   --hl-x insets it to line up with the row's hairline. */
+@utility hl-list {
+  & > [data-row] {
+    background: linear-gradient(var(--color-green), var(--color-green)) no-repeat;
+    background-size: calc(100% - var(--hl-x, 0px) * 2) 0%;
+    background-position: center bottom;
+    transition: background-size 0.05s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  @media (hover: hover) {
+    & > [data-row]:hover {
+      background-size: calc(100% - var(--hl-x, 0px) * 2) 100%;
+      background-position: center top;
+      transition-duration: 0.25s;
+    }
+  }
+}
+
 /* Links that read as text; a subtle opacity change on hover. */
 @utility link {
   transition: opacity 0.3s var(--ease-out);
@@ -205,7 +228,7 @@ html.js [data-media] {
 
 /* The guideline section switcher sits on the overlay like the nav does. */
 html[data-nav-open] [data-guide-sub] {
-  color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 .hide-scrollbar {

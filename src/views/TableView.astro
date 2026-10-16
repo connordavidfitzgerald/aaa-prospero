@@ -1,7 +1,8 @@
 ---
 import Intro from "../components/Intro.astro";
 import type { Budget } from "../data/copy";
-import { t, type Lang, type L } from "../lib/i18n";
+import { page } from "../data/pages";
+import { href, t, type Lang, type L } from "../lib/i18n";
 
 interface Props {
   lang: Lang;
@@ -17,14 +18,13 @@ const dense = data.rows.length > 12;
 ---
 
 <!--
-  Budget pages, after the proposal document (Figma FR 20–23): the title with
-  its first word highlighted in green, notes in columns 1–4, and the table in
-  columns 5–12 under a green header row. Everything is set flush left.
+  Budget pages, after the proposal document (Figma FR 20–23): a two-line title,
+  notes in columns 1–4, and the table in columns 5–12 under a green header row. Everything is set flush left.
 -->
 <div class="slide">
 <Intro prev={prev} next={next}>
   <h1>
-    <span class="block" data-reveal><mark class="highlight">{t(lead, lang)}</mark></span>
+    <span class="block" data-reveal>{t(lead, lang)}</span>
     <span class="block" data-reveal>{t(sub, lang)}</span>
   </h1>
 </Intro>
@@ -50,19 +50,22 @@ const dense = data.rows.length > 12;
           }
         </tr>
       </thead>
-      <tbody class="dim-list">
+      <tbody class="hl-list">
         {
-          data.rows.map((r) => (
-            <tr data-row data-rule>
-              <th scope="row" class="px-[10px] py-[0.55em] align-top font-medium" data-reveal>
-                {t(r.label, lang)}
-                {r.note && <span class="ml-[1.2em] whitespace-nowrap">{t(r.note, lang)}</span>}
-              </th>
-              {r.cells.map((c) => (
-                <td class="px-[10px] py-[0.55em] align-top whitespace-nowrap" data-reveal>{cell(c)}</td>
-              ))}
-            </tr>
-          ))
+          data.rows.map((r) => {
+            const to = r.page && href(page(r.page).path, lang);
+            return (
+              <tr class:list={[to && "cursor-pointer"]} data-row data-rule data-row-href={to}>
+                <th scope="row" class="px-[10px] py-[0.55em] align-top font-medium" data-reveal>
+                  {to ? <a href={to}>{t(r.label, lang)}</a> : t(r.label, lang)}
+                  {r.note && <span class="ml-[1.2em] whitespace-nowrap">{t(r.note, lang)}</span>}
+                </th>
+                {r.cells.map((c) => (
+                  <td class="px-[10px] py-[0.55em] align-top whitespace-nowrap" data-reveal>{cell(c)}</td>
+                ))}
+              </tr>
+            );
+          })
         }
       </tbody>
     </table>

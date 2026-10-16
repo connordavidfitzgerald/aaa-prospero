@@ -1,4 +1,7 @@
 ---
+// The closing page, on the A.A.A. green: the contact details in the intro row
+// (label over value on phones) and the sign-off line set huge in bold caps,
+// sitting on the bottom edge.
 import Intro from "../components/Intro.astro";
 import { CONTACT } from "../data/copy";
 import { t, type Lang } from "../lib/i18n";
@@ -11,18 +14,43 @@ interface Props {
 const { lang, prev, next } = Astro.props;
 ---
 
-<Intro text={t(CONTACT.intro, lang)} prev={prev} next={next} />
+<div class="slide flex min-h-[calc(100svh-10px)] flex-col">
+  <Intro prev={prev} next={next}>
+    <dl>
+      <div class="rule flex flex-col py-[0.55em] md:flex-row" data-rule>
+        <dt class="shrink-0 text-muted md:w-[var(--num)]" data-reveal>{t(CONTACT.person, lang)}</dt>
+        <dd data-reveal>{CONTACT.name}</dd>
+      </div>
+      <div class="rule flex flex-col py-[0.55em] md:flex-row" data-rule>
+        <dt class="shrink-0 text-muted md:w-[var(--num)]" data-reveal>{t(CONTACT.emailLabel, lang)}</dt>
+        <dd class="min-w-0" data-reveal><a href={`mailto:${CONTACT.email}`} class="link break-all">{CONTACT.email}</a></dd>
+      </div>
+      <div class="rule flex flex-col py-[0.55em] md:flex-row" data-rule>
+        <dt class="max-md:hidden w-[var(--num)] shrink-0"></dt>
+        <dd data-reveal>{t(CONTACT.signoff, lang)}</dd>
+      </div>
+    </dl>
+  </Intro>
 
-<section class="grid-12 mt-[30svh] pb-[10svh]">
-  <dl class="col-span-4 md:col-start-7 md:col-span-6">
-    <div class="rule flex py-[0.55em]" data-rule>
-      <dt class="w-[var(--num)] shrink-0 text-muted" data-reveal>{t(CONTACT.person, lang)}</dt>
-      <dd data-reveal>{CONTACT.name}</dd>
-    </div>
-    <div class="rule flex py-[0.55em]" data-rule>
-      <dt class="w-[var(--num)] shrink-0 text-muted" data-reveal>{t(CONTACT.emailLabel, lang)}</dt>
-      <dd data-reveal><a href={`mailto:${CONTACT.email}`} class="link break-all">{CONTACT.email}</a></dd>
-    </div>
-  </dl>
-  <p class="col-span-4 mt-[calc(var(--fs)*4)] md:col-start-7 md:col-span-6" data-split>{t(CONTACT.signoff, lang)}</p>
-</section>
+  <h1 class="closing mt-auto px-[var(--margin)] pt-[6svh]" data-split>{t(CONTACT.intro, lang)}</h1>
+</div>
+
+<style>
+  /* Bold caps sized so the line sets in three balanced rows almost edge to
+     edge, capped by the viewport height so it never outgrows the slide. The
+     masks SplitText puts round each line get a little headroom so the tight
+     leading doesn't clip the cap tops. */
+  .closing {
+    font-weight: 700;
+    font-size: max(2.75rem, min(13.6vw, 22svh));
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin-bottom: -0.06em;
+  }
+  .closing :global(.split-line) {
+    padding-top: 0.06em;
+    margin-top: -0.06em;
+  }
+</style>

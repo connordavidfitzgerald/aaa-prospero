@@ -65,5 +65,7 @@ const intro = t(INDEX.intro, lang);
     class="col-start-4 row-start-1 flex flex-col items-end self-start text-right md:mt-[var(--intro-gap)] md:col-start-11 md:col-span-2"
   >
     <PrevNext prev={prev} next={next} />
+    <!-- Arrow keys step through the pages everywhere; no use on touch. -->
+    <p class="mt-[0.4em] whitespace-nowrap text-muted pointer-coarse:hidden" data-reveal>{t(INDEX.keysHint, lang)}</p>
   </div>
 </section>

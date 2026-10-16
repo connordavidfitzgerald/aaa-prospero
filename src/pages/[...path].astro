@@ -20,7 +20,7 @@ import TableView from "../views/TableView.astro";
 import AnalysisView from "../views/AnalysisView.astro";
 import StepsView from "../views/StepsView.astro";
 import ContactView from "../views/ContactView.astro";
-import { PAGES, page, nextPage, prevPage, type Page } from "../data/pages";
+import { PAGES, CHAPTERS, page, nextPage, prevPage, type Page } from "../data/pages";
 import { UI, CCAM, ECOZOIC, CHIMIE, HEARD, COLUMNS, BUDGETS } from "../data/copy";
 import { LANGS, href, t, type Lang } from "../lib/i18n";
 import { getTeam, type Member } from "../lib/team";
@@ -77,11 +77,22 @@ if (member && memberIndex !== undefined) {
 const PROJECTS: Record<string, Project> = { ccam: CCAM, ecozoic: ECOZOIC, chimie: CHIMIE };
 const project = p.view === "project" ? PROJECTS[p.id] : undefined;
 const guideBrand = p.view === "guidelines" ? (p.id.replace("-guidelines", "") as "ccam" | "ecozoic" | "chimie") : undefined;
+// Projects step to the next project, skipping the guidelines; the last one
+// steps out of the chapter to whatever follows it.
+const projectIds = PAGES.filter((q) => q.view === "project").map((q) => q.id);
+const nextProjectId = project ? projectIds[projectIds.indexOf(p.id) + 1] : undefined;
+const afterProjects = (() => {
+  const ids = CHAPTERS.find((c) => c.pages.includes(p.id))?.pages ?? [p.id];
+  return nextPage(ids[ids.length - 1]);
+})();
+const projectNext = nextProjectId
+  ? { href: href(page(nextProjectId).path, lang), label: t(UI.nextProject, lang) }
+  : { href: href(afterProjects.path, lang), label: nextLabel };
 const thumb = (key: string, src: string) => ({ key, name: PROJECTS[key].client, href: href(`work/${key}`, lang), src });
 const thumbs = [
   thumb("ccam", "/media/ccam/subway.jpg"),
   thumb("ecozoic", "/media/eco/eco-cover.jpg"),
-  thumb("chimie", "/media/chimie/01.jpg"),
+  thumb("chimie", "https://image.mux.com/v501QTQrGX39mYOUvo7Nn01S3ka7Tu1KBKFO81ktgXn9M/thumbnail.webp?time=1&width=800"),
 ];
 ---
 
@@ -109,14 +120,14 @@ const thumbs = [
         services={t(project.services, lang)}
         links={[
           {
-            label: t(p.id === "ccam" ? UI.viewGuidelines : UI.viewBrandGuidelines, lang),
+            label: t(UI.viewGuidelines, lang),
             href: href(`work/${p.id}/guidelines`, lang),
             internal: true,
           },
           ...project.links.map((l) => ({ label: `${t(l.label, lang)} ↗`, href: l.href })),
         ]}
-        prev={prev}
-        next={next}
+        back={{ href: href("work", lang), label: t(UI.backToProjects, lang) }}
+        next={projectNext}
       />
     )
   }

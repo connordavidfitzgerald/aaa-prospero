@@ -15,6 +15,8 @@ export const UI = {
   next: l("Suivant →", "Next →"),
   prev: l("← Précédent", "← Previous"),
   back: l("← Retour", "← Back"),
+  backToProjects: l("← Retour aux projets", "← Back to projects"),
+  nextProject: l("Projet suivant →", "Next project →"),
   langLabel: l("En", "Fr"),
   menu: l("Pages", "Pages"),
   close: l("Fermer", "Close"),
@@ -31,8 +33,7 @@ export const UI = {
   soundOn: l("Son", "Sound on"),
   soundOff: l("Muet", "Sound off"),
   allPages: l("Toutes les pages", "All pages"),
-  viewGuidelines: l("Voir le guide de saison ↗", "View brand guidelines ↗"),
-  viewBrandGuidelines: l("Voir le guide de marque ↗", "View brand guidelines ↗"),
+  viewGuidelines: l("Voir le guide de marque ↗", "View brand guidelines ↗"),
   info: l("+Info", "+Info"),
   infoClose: l("−Info", "−Info"),
 };
@@ -42,6 +43,7 @@ export const INDEX = {
     "Réponse à l’appel d’offres du Théâtre Prospero.\nRefonte de l’identité et campagnes de saison.\nOctobre 2026.",
     "Response to Théâtre Prospero’s call for proposals.\nIdentity redesign and season campaigns.\nOctober 2026.",
   ),
+  keysHint: l("Naviguez avec les touches ← →", "Use the ← → keys to navigate"),
 };
 
 export const ABOUT = {
@@ -118,9 +120,6 @@ export const ECOZOIC: Project = {
   media: [
     img("/media/eco/eco-cover.jpg", "Leadership for the Ecozoic"),
     img("/media/eco/instagram.jpg", "Publications Instagram de Leadership for the Ecozoic"),
-    img("/media/eco/chair.jpg", "Site de Leadership for the Ecozoic, portable posé sur une chaise"),
-    img("/media/eco/tote.jpg", "Sac fourre-tout Leadership for the Ecozoic"),
-    img("/media/eco/door.jpg", "Plaque de porte Leadership for the Ecozoic"),
     ...(projects.ecozoic.media as Media[]),
   ],
 };
@@ -170,6 +169,8 @@ export const PHASES = {
 export interface Columns {
   intro: L;
   columns: { title: L; items: L[] }[];
+  /** A Mux video under the left column. */
+  video?: { playbackId: string; aspect: string };
 }
 
 export const COLUMNS: Record<string, Columns> = {
@@ -402,6 +403,7 @@ export const COLUMNS: Record<string, Columns> = {
         ],
       },
     ],
+    video: { playbackId: "tSlNCZ0002jksKb029N4eFLTw00tG49boYmZERw2fT6eQzA", aspect: "3342 / 2160" },
   },
 };
 
@@ -428,10 +430,12 @@ export interface BudgetRow {
   label: L;
   cells: (L | string)[];
   note?: L;
+  /** Page the row opens (by id), e.g. a part's detailed budget. */
+  page?: string;
 }
 
 export interface Budget {
-  /** Two-line title, the first line highlighted in green (Figma FR 20–23). */
+  /** Two-line title (Figma FR 20–23). */
   title: [L, L];
   notes: L[];
   head: L[];
@@ -480,10 +484,10 @@ export const BUDGETS: Record<string, Budget> = {
     ],
     head: [H.part, H.base, H.pm, H.total],
     rows: [
-      { label: l("Volet 1 · Identité institutionnelle et site web", "Part 1 · Institutional identity and website"), cells: [$("31 460 $"), $("8 336,90 $"), $("39 796,90 $")] },
-      { label: l("Volet 2 · Saison 2027-2028", "Part 2 · Season 2027-2028"), cells: [$("31 860 $"), $("7 939,40 $"), $("39 799,40 $")] },
-      { label: l("Volet 2 · Saison 2028-2029", "Part 2 · Season 2028-2029"), cells: [$("17 700 $"), $("4 187 $"), $("21 887 $")] },
-      { label: l("Volet 2 · Saison 2029-2030", "Part 2 · Season 2029-2030"), cells: [$("17 700 $"), $("4 187 $"), $("21 887 $")] },
+      { label: l("Volet 1 · Identité institutionnelle et site web", "Part 1 · Institutional identity and website"), page: "budget-identity", cells: [$("31 460 $"), $("8 336,90 $"), $("39 796,90 $")] },
+      { label: l("Volet 2 · Saison 2027-2028", "Part 2 · Season 2027-2028"), page: "budget-2027", cells: [$("31 860 $"), $("7 939,40 $"), $("39 799,40 $")] },
+      { label: l("Volet 2 · Saison 2028-2029", "Part 2 · Season 2028-2029"), page: "budget-2028", cells: [$("17 700 $"), $("4 187 $"), $("21 887 $")] },
+      { label: l("Volet 2 · Saison 2029-2030", "Part 2 · Season 2029-2030"), page: "budget-2028", cells: [$("17 700 $"), $("4 187 $"), $("21 887 $")] },
       { label: l("Poster Studio · accès annuel (400 $, 600 $, 600 $)", "Poster Studio · annual access ($400, $600, $600)"), cells: [$("1 600 $"), "", $("1 600 $")] },
       { label: l("Total du mandat, trois saisons", "Total for the mandate, three seasons"), cells: [$("100 320 $"), $("24 650,30 $"), $("124 970,30 $")], note: cad },
     ],

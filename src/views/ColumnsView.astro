@@ -1,5 +1,6 @@
 ---
 import Intro from "../components/Intro.astro";
+import Media from "../components/Media.astro";
 import type { Columns } from "../data/copy";
 import { t, type Lang } from "../lib/i18n";
 
@@ -28,5 +29,14 @@ const { lang, data, prev, next } = Astro.props;
         </ul>
       </div>
     ))
+  }
+  {
+    data.video && (
+      <Media
+        class="col-span-4 col-start-1 md:col-span-6"
+        playbackId={data.video.playbackId}
+        aspect={data.video.aspect}
+      />
+    )
   }
 </section>

@@ -16,7 +16,7 @@ const isIndex = pageId === "index";
 ---
 
 <header class="site-nav fixed inset-x-0 top-0 z-50" data-nav transition:persist={`nav-${lang}`}>
-  <div class="fixed inset-0 bg-slate/95 opacity-0 invisible" data-nav-overlay aria-hidden="true"></div>
+  <div class="fixed inset-0 bg-green/95 opacity-0 invisible" data-nav-overlay aria-hidden="true"></div>
 
   <div class="relative grid-12 pt-[10px]">
     <a href={href("", lang)} class="link col-span-1 md:col-span-3 whitespace-nowrap" data-nav-home>
@@ -46,7 +46,7 @@ const isIndex = pageId === "index";
         data-nav-menu
         data-lenis-prevent
       >
-        <ul class="dim-list text-paper">
+        <ul class="dim-list text-ink">
           <li data-row>
             <a href={href("", lang)} class="menu-link flex" data-menu-link="index">
               <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.index, lang)}</span>
