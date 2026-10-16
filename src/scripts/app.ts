@@ -3,6 +3,7 @@ import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { navigate } from "astro:transitions/client";
+import type { WorkGL } from "./work-gl";
 
 // Site-wide behaviour, loaded once and kept alive across Astro client-side
 // navigations. Page controllers mount on `astro:page-load` and are torn down
@@ -393,11 +394,46 @@ function initWork(main: HTMLElement) {
     );
   };
 
+  // Desktop pointers get the WebGL thumbnails. Their media is taken out of
+  // the shared entrance (the GL planes run their own); if WebGL can't start,
+  // the DOM pictures fade back in.
+  let gl: WorkGL | null = null;
+  let dead = false;
+  const canvas = work.querySelector<HTMLCanvasElement>("[data-work-gl]");
+  if (canvas && !reduced && matchMedia("(min-width: 48rem) and (hover: hover)").matches) {
+    const media = [...work.querySelectorAll<HTMLElement>("[data-work-item] [data-media]")];
+    work.dataset.gl = "";
+    media.forEach((m) => m.removeAttribute("data-media"));
+    import("./work-gl")
+      .then(({ mountWorkGL }) => mountWorkGL(work, canvas))
+      .then((g) => {
+        if (dead) return g.destroy();
+        gl = g;
+        if (active) gl.hover(active);
+      })
+      .catch((err) => {
+        console.warn("Work WebGL unavailable", err);
+        if (dead) return;
+        delete work.dataset.gl;
+        gsap.fromTo(work.querySelectorAll(".work-img"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, stagger: 0.06 });
+      });
+  }
+
   work.querySelectorAll<HTMLElement>("[data-work-item]").forEach((item) => {
-    item.addEventListener("mouseenter", () => set(item.dataset.workItem!));
-    item.addEventListener("mouseleave", () => set(""));
+    item.addEventListener("mouseenter", () => {
+      set(item.dataset.workItem!);
+      gl?.hover(item.dataset.workItem!);
+    });
+    item.addEventListener("mouseleave", () => {
+      set("");
+      gl?.hover("");
+    });
   });
-  teardown.push(() => splits.forEach((s) => s.revert()));
+  teardown.push(() => {
+    dead = true;
+    gl?.destroy();
+    splits.forEach((s) => s.revert());
+  });
 }
 
 /* ------------------------------------------------- Project media strip */
@@ -830,11 +866,11 @@ document.addEventListener("astro:page-load", () => {
   // elements inside it (team preview, guideline section switcher).
   if (!reduced) gsap.fromTo(main, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 });
 
+  initWork(main);
   teardown.push(initEntrances(main));
   initTeam(main);
   initRowLinks(main);
   initPreview(main);
-  initWork(main);
   initStrip(main);
   initInfo(main);
   initGuidelines(main);

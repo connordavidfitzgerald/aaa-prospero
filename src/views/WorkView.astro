@@ -30,7 +30,7 @@ const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
   <ul class="grid w-full grid-cols-2 gap-[10px] md:flex md:w-auto md:justify-center">
     {
       thumbs.map((th, i) => (
-        <li class="md:w-[15vw]" data-work-item={th.key}>
+        <li class="md:w-[15vw]" data-work-item={th.key} data-work-src={th.src}>
           <a href={th.href} class="block" aria-label={th.name}>
             <Media src={th.src} alt={th.name} aspect="3 / 2" imgClass="work-img" eager={i < 4} />
             <span class="mt-[0.4em] block text-muted md:hidden">{th.name}</span>
@@ -39,6 +39,9 @@ const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
       ))
     }
   </ul>
+
+  <!-- WebGL redraw of the thumbnails (src/scripts/work-gl.ts), under the names. -->
+  <canvas class="pointer-events-none absolute inset-0 hidden h-full w-full" data-work-gl aria-hidden="true"></canvas>
 
   <!-- The hovered project's name, set huge across the row (Figma 16:8372). -->
   <div class="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex" aria-hidden="true">
@@ -61,6 +64,14 @@ const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
   [data-work-name] > :global(div) {
     overflow-x: visible !important;
     overflow-y: clip !important;
+  }
+  /* With WebGL running, the canvas draws the pictures; the DOM ones stay for
+     layout, links and hit-testing. */
+  [data-work][data-gl] :global(.work-img) {
+    opacity: 0;
+  }
+  [data-work][data-gl] [data-work-gl] {
+    display: block;
   }
   :global(.work-img) {
     filter: grayscale(1);
