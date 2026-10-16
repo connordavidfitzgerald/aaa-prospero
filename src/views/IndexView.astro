@@ -41,7 +41,7 @@ const intro = t(INDEX.intro, lang);
               <span class="w-[var(--num)] shrink-0">{c.num}</span>
               <span>{t(c.title, lang)}</span>
             </a>
-            {subPages(c).map((p) => (
+            {subPages(c).filter((p) => p.view !== "guidelines").map((p) => (
               <a href={href(p.path, lang)} class="flex text-muted transition-opacity duration-300 hover:opacity-100">
                 <span class="w-[var(--num)] shrink-0">{p.num}</span>
                 <span>{t(p.title, lang)}</span>
