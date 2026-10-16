@@ -11,8 +11,10 @@ interface Props {
   imgClass?: string;
   eager?: boolean;
   sizes?: string;
+  /** "contain" letterboxes the asset instead of cropping it to the box. */
+  fit?: "cover" | "contain";
 }
-const { src, playbackId, alt = "", width, height, aspect, class: className, imgClass, eager, sizes } = Astro.props;
+const { src, playbackId, alt = "", width, height, aspect, class: className, imgClass, eager, sizes, fit = "cover" } = Astro.props;
 const style = aspect ? `aspect-ratio: ${aspect}` : undefined;
 ---
 
@@ -22,6 +24,7 @@ const style = aspect ? `aspect-ratio: ${aspect}` : undefined;
       <mux-video
         class:list={["block h-full w-full", imgClass]}
         playback-id={playbackId}
+        style={fit === "contain" ? "--media-object-fit: contain" : undefined}
         poster={`https://image.mux.com/${playbackId}/thumbnail.webp?time=1&width=1600`}
         muted
         loop
@@ -38,7 +41,7 @@ const style = aspect ? `aspect-ratio: ${aspect}` : undefined;
         sizes={sizes}
         loading={eager ? "eager" : "lazy"}
         decoding="async"
-        class:list={["block h-full w-full object-cover", imgClass]}
+        class:list={["block h-full w-full", fit === "contain" ? "object-contain" : "object-cover", imgClass]}
         draggable="false"
       />
     )
