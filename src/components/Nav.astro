@@ -46,28 +46,27 @@ const isIndex = pageId === "index";
         data-nav-menu
         data-lenis-prevent
       >
-        <ul class="text-paper">
-          <li data-menu-item>
+        <ul class="dim-list text-paper">
+          <li data-row>
             <a href={href("", lang)} class="menu-link flex" data-menu-link="index">
               <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.index, lang)}</span>
             </a>
           </li>
           {
             CHAPTERS.map((c) => (
-              <li class="mt-[calc(var(--fs)*0.9)]" data-menu-item>
+              <li class="mt-[calc(var(--fs)*0.9)]" data-row>
                 <a
                   href={href(chapterHref(c), lang)}
                   class="menu-link flex"
                   data-menu-link={page(c.pages[0]).num === c.num ? c.pages[0] : `chapter-${c.num}`}
-                  data-chapter
                 >
                   <span class="w-[var(--num)] shrink-0">{c.num}</span>
                   <span>{t(c.title, lang)}</span>
                 </a>
                 <ul>
                   {subPages(c).map((p) => (
-                    <li data-menu-item>
-                      <a href={href(p.path, lang)} class="menu-link flex" data-menu-link={p.id}>
+                    <li>
+                      <a href={href(p.path, lang)} class="menu-link menu-sub flex" data-menu-link={p.id}>
                         <span class="w-[var(--num)] shrink-0">{p.num}</span>
                         <span>{t(p.title, lang)}</span>
                       </a>
@@ -77,12 +76,12 @@ const isIndex = pageId === "index";
               </li>
             ))
           }
-          <li class="mt-[calc(var(--fs)*0.9)]" data-menu-item>
+          <li class="mt-[calc(var(--fs)*0.9)]" data-row>
             <a href={href(page("contact").path, lang)} class="menu-link flex" data-menu-link="contact">
               <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.contact, lang)}</span>
             </a>
           </li>
-          <li class="mt-[calc(var(--fs)*0.9)] md:hidden" data-menu-item>
+          <li class="mt-[calc(var(--fs)*0.9)] md:hidden" data-row>
             <a href={altHref} class="menu-link flex" data-nav-lang-mobile>
               <span class="w-[var(--num)] shrink-0"></span><span>{t(UI.langLabel, lang)}</span>
             </a>
@@ -108,19 +107,17 @@ const isIndex = pageId === "index";
     padding-bottom: 0.12em;
     margin-bottom: -0.12em;
   }
-  .menu-link {
+  /* Like the home index: chapters full, their pages muted until hovered or
+     current; hovering a row dims the others (dim-list). */
+  .menu-sub {
     opacity: var(--muted);
     transition: opacity 0.3s var(--ease-out);
   }
-  .menu-link[data-chapter],
-  .menu-link[aria-current="page"] {
+  .menu-sub[aria-current="page"] {
     opacity: 1;
   }
   @media (hover: hover) {
-    [data-nav-menu]:has(.menu-link:hover) .menu-link {
-      opacity: var(--muted);
-    }
-    [data-nav-menu] .menu-link:hover {
+    .menu-sub:hover {
       opacity: 1;
     }
   }

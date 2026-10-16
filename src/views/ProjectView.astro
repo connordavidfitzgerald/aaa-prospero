@@ -2,7 +2,7 @@
 import Media from "../components/Media.astro";
 import PrevNext from "../components/PrevNext.astro";
 import { UI } from "../data/copy";
-import { t, type Lang } from "../lib/i18n";
+import { href, t, type Lang } from "../lib/i18n";
 import type { Media as M } from "../lib/projects";
 
 interface Props {
@@ -70,6 +70,11 @@ function ratio(m: M) {
   <!-- Soft scrims so the white type holds on light images. -->
   <div class="pointer-events-none absolute inset-x-0 top-0 h-[120px] bg-linear-to-b from-black/30 to-transparent"></div>
   <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[180px] bg-linear-to-t from-black/35 to-transparent"></div>
+
+  <!-- Back to the project index, under the nav's Index link. -->
+  <div class="pointer-events-none absolute inset-x-0 top-(--intro) grid-12">
+    <a href={href("work", lang)} class="link pointer-events-auto col-span-2 justify-self-start" data-reveal>{t(UI.back, lang)}</a>
+  </div>
 
   <div class="invisible absolute inset-0 bg-ink/75" data-info-overlay aria-hidden="true"></div>
   <div

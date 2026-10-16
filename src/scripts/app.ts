@@ -67,12 +67,17 @@ function initNav() {
 
   const toggle = nav.querySelector<HTMLButtonElement>("[data-nav-toggle]")!;
   const menu = nav.querySelector<HTMLElement>("[data-nav-menu]")!;
-  const items = [...menu.querySelectorAll("[data-menu-item] > a, [data-menu-item] li > a")];
+  // The menu fades as a whole; its links keep their CSS opacities.
+  const fade = (show: boolean, instant = false) => {
+    gsap.killTweensOf(menu);
+    if (instant) return gsap.set(menu, { autoAlpha: 0 });
+    gsap.to(menu, { autoAlpha: show ? 1 : 0, duration: show ? 0.4 : 0.2, ease: show ? "power2.out" : "power2.in" });
+  };
 
   const close = (instant = false) => {
     if (toggle.getAttribute("aria-expanded") !== "true") return;
     toggle.setAttribute("aria-expanded", "false");
-    closeList(menu, items, instant);
+    fade(false, instant);
     showOverlay(false);
     closeOpenMenu = null;
   };
@@ -80,7 +85,7 @@ function initNav() {
     closeOpenMenu?.();
     toggle.setAttribute("aria-expanded", "true");
     menu.scrollTop = 0;
-    openList(menu, items);
+    fade(true);
     showOverlay(true);
     closeOpenMenu = () => close();
   };
