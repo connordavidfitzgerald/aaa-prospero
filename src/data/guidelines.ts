@@ -1,36 +1,68 @@
-import pages from "./ccam-guidelines.json";
+import ccam from "./guidelines/ccam.json";
+import ecozoic from "./guidelines/ecozoic.json";
+import chimie from "./guidelines/chimie.json";
 import type { L } from "../lib/i18n";
+import type { Brand, GuidePageData } from "../lib/guide";
 
-// CCAM 2026 Season Guidelines, exported page by page from Figma
-// (section 16:8435) into public/media/guidelines/ccam/NN.jpg.
+// Brand guidelines rebuilt in HTML from Figma ("A.A.A - Shared", page
+// CURRENT): CCAM 2026 Season Guidelines, L4E Brand Guidelines — v2 and chimie
+// Brand Guidelines. Regenerate with scripts/guidelines (see README there).
 
-export interface GuidePage {
-  n: number;
-  num: string;
-  section: string;
-  title: string;
-}
+const l = (fr: string, en: string): L => ({ fr, en });
 
-export const GUIDE_PAGES = pages as GuidePage[];
-
-const LABELS: Record<string, L> = {
-  "0": { fr: "Page titre", en: "Title page" },
-  "1": { fr: "La saison", en: "The season" },
-  "2": { fr: "Titre de saison", en: "Season title" },
-  "3": { fr: "Couleur", en: "Colour" },
-  "4": { fr: "Typographie", en: "Typography" },
-  "5": { fr: "Éléments graphiques", en: "Graphic elements" },
-  "6": { fr: "Mise en page", en: "Layout" },
-  "7": { fr: "Applications", en: "Applications" },
-  "8": { fr: "Voix", en: "Voice" },
+const LABELS: Record<Brand, Record<string, L>> = {
+  ccam: {
+    "0": l("Page titre", "Title page"),
+    "1": l("La saison", "The season"),
+    "2": l("Titre de saison", "Season title"),
+    "3": l("Couleur", "Colour"),
+    "4": l("Typographie", "Typography"),
+    "5": l("Éléments graphiques", "Graphic elements"),
+    "6": l("Mise en page", "Layout"),
+    "7": l("Applications", "Applications"),
+    "8": l("Voix", "Voice"),
+  },
+  ecozoic: {
+    "0": l("Page titre", "Title page"),
+    "1": l("Introduction", "Introduction"),
+    "2": l("Logo", "Logo"),
+    "3": l("Couleur", "Colour"),
+    "4": l("Typographie", "Typography"),
+    "5": l("Éléments graphiques", "Graphic elements"),
+    "6": l("Photographie", "Photography"),
+    "7": l("Mise en page", "Layout"),
+    "8": l("Interface", "Interface"),
+    "9": l("Voix", "Voice"),
+  },
+  chimie: {
+    "0": l("Page titre", "Title page"),
+    "1": l("Introduction", "Introduction"),
+    "2": l("Logo", "Logo"),
+    "3": l("Couleur", "Colour"),
+    "4": l("Typographie", "Typography"),
+    "5": l("Éléments graphiques", "Graphic elements"),
+    "6": l("Photographie", "Photography"),
+    "7": l("Mise en page", "Layout"),
+    "8": l("Applications", "Applications"),
+    "9": l("Voix", "Voice"),
+  },
 };
 
-/** One entry per guideline chapter, pointing at its first page. */
-export const GUIDE_SECTIONS = Object.entries(LABELS).map(([key, label]) => ({
-  key,
-  label,
-  first: GUIDE_PAGES.find((p) => p.num.split(".")[0] === key)!.n,
-}));
+const PAGES: Record<Brand, GuidePageData[]> = {
+  ccam: ccam as GuidePageData[],
+  ecozoic: ecozoic as GuidePageData[],
+  chimie: chimie as GuidePageData[],
+};
 
-export const guideSrc = (n: number, thumb = false) =>
-  `/media/guidelines/ccam/${thumb ? "thumb-" : ""}${String(n).padStart(2, "0")}.jpg`;
+export const sectionKey = (num: string) => num.split(".")[0];
+
+export const guide = (brand: Brand) => {
+  const pages = PAGES[brand];
+  /** One entry per chapter, pointing at its first page. */
+  const sections = Object.entries(LABELS[brand]).map(([key, label]) => ({
+    key,
+    label,
+    first: pages.find((p) => sectionKey(p.num) === key)!.n,
+  }));
+  return { pages, sections };
+};

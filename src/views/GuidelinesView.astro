@@ -1,26 +1,32 @@
 ---
-import { GUIDE_PAGES, GUIDE_SECTIONS, guideSrc } from "../data/guidelines";
+import { guide, sectionKey } from "../data/guidelines";
 import { UI } from "../data/copy";
 import { href, t, type Lang } from "../lib/i18n";
+import type { Brand } from "../lib/guide";
 import PrevNext from "../components/PrevNext.astro";
+import GuidePage from "../components/GuidePage.astro";
 
 interface Props {
   lang: Lang;
+  brand: Brand;
   prev: { href: string; label: string };
   next: { href: string; label: string };
 }
-const { lang, prev, next } = Astro.props;
+const { lang, brand, prev, next } = Astro.props;
 
-const sections = GUIDE_SECTIONS.map((s) => ({ ...s, label: t(s.label, lang) }));
-const sectionOf = (num: string) => sections.find((s) => s.key === num.split(".")[0])!;
+const { pages, sections: raw } = guide(brand);
+const sections = raw.map((s) => ({ ...s, label: t(s.label, lang) }));
+// Longer guides get more columns so the whole grid still fits one slide.
+const cols = pages.length > 48 ? 10 : 8;
 ---
 
 <!--
-  CCAM guideline viewer. Two states on one route (Figma 16:13510 / 16:15209):
-  a grid of every page, and a full view with ← → and a section dropdown that
+  Guideline viewer. Two states on one route (Figma 16:13510 / 16:15209): a
+  grid of every page, and a full view with ← → and a section dropdown that
   sits under the nav title (Figma 16:16934). The hash (#p12) holds the page.
+  Pages are HTML (GuidePage); the full view clones the grid's copy.
 -->
-<div data-guide data-count={GUIDE_PAGES.length}>
+<div data-guide data-count={pages.length}>
   <!-- Section switcher, aligned under the nav title. -->
   <div class="pointer-events-none fixed inset-x-0 top-[calc(10px+var(--fs)*1.12)] z-[55] grid-12" data-guide-sub>
     <div class="col-span-3 col-start-2 md:col-start-4 md:col-span-6 pl-[var(--num)]">
@@ -53,29 +59,29 @@ const sectionOf = (num: string) => sections.find((s) => s.key === num.split(".")
     <!-- The gap above the grid gives way first so every page fits on one slide. -->
     <div class="hidden md:block shrink basis-[calc(var(--fs)*9.6)] min-h-[calc(var(--fs)*1.4)]"></div>
     <div class="grid-12 mt-[calc(var(--fs)*7)] md:mt-0">
-      <a href={href("work/ccam", lang)} class="link col-span-2" data-reveal>{t(UI.back, lang)}</a>
+      <a href={href(`work/${brand}`, lang)} class="link col-span-2" data-reveal>{t(UI.back, lang)}</a>
       <div class="col-span-2 flex justify-end md:col-start-10 md:col-span-3">
         <PrevNext prev={prev} next={next} />
       </div>
     </div>
-    <ul class="mt-[calc(var(--fs)*0.6)] grid grid-cols-3 gap-[10px] px-[10px] md:grid-cols-8">
+    <ul
+      class="mt-[calc(var(--fs)*0.6)] grid grid-cols-3 gap-[10px] px-[10px] md:grid-cols-[repeat(var(--cols),minmax(0,1fr))]"
+      style={`--cols:${cols}`}
+    >
       {
-        GUIDE_PAGES.map((p) => (
+        pages.map((p) => (
           <li data-reveal>
             <button
               type="button"
-              class="group block w-full"
+              class="group block w-full text-left"
               data-guide-goto={p.n}
               aria-label={`${p.num} ${p.title}`}
             >
-              <img
-                src={guideSrc(p.n, true)}
-                alt=""
-                width="480"
-                height="270"
-                loading={p.n <= 16 ? "eager" : "lazy"}
-                decoding="async"
-                class="block aspect-video w-full object-cover grayscale transition-[filter] duration-500 group-hover:grayscale-0"
+              <GuidePage
+                page={p}
+                brand={brand}
+                thumb
+                class="pointer-events-none select-none grayscale transition-[filter] duration-500 group-hover:grayscale-0"
               />
             </button>
           </li>
@@ -103,7 +109,7 @@ const sectionOf = (num: string) => sections.find((s) => s.key === num.split(".")
     type="application/json"
     data-guide-pages
     set:html={JSON.stringify(
-      GUIDE_PAGES.map((p) => ({ n: p.n, num: p.num, title: p.title, src: guideSrc(p.n), section: sectionOf(p.num).key })),
+      pages.map((p) => ({ n: p.n, num: p.num, title: p.title, section: sectionKey(p.num) })),
     )}
   />
 </div>

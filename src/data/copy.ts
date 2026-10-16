@@ -32,6 +32,7 @@ export const UI = {
   soundOff: l("Muet", "Sound off"),
   allPages: l("Toutes les pages", "All pages"),
   viewGuidelines: l("Voir le guide de saison ↗", "View brand guidelines ↗"),
+  viewBrandGuidelines: l("Voir le guide de marque ↗", "View brand guidelines ↗"),
   info: l("+Info", "+Info"),
   infoClose: l("−Info", "−Info"),
 };
@@ -102,10 +103,10 @@ export const CCAM: Project = {
   services: l("Identité de saison, affiches, réseaux sociaux, guide", "Season identity, posters, social, guidelines"),
   links: [],
   media: [
-    img("/media/ccam/macbook.jpg", "Site du CCAM sur un portable"),
-    img("/media/ccam/phone.jpg", "Publications Instagram du CCAM sur un téléphone"),
+    img("/media/ccam/posters.jpg", "Affiches de la saison : Triomphe, Bourse émergence, Vers un avenir plus juste et équitable"),
+    img("/media/ccam/phone.jpg", "Publication Instagram du CCAM sur un téléphone"),
     img("/media/ccam/subway.jpg", "Affiche Chantier dans le métro", 1568, 1046),
-    img("/media/ccam/poster-portrait.jpg", "Affiche Chantier, format portrait", 1226, 1568),
+    img("/media/ccam/pamphlet.jpg", "Dépliant de l’exposition Chantier à la Galerie Art Mûr"),
   ],
 };
 
@@ -115,7 +116,7 @@ export const ECOZOIC: Project = {
   ...projects.ecozoic,
   client: "Ecozoic",
   media: [
-    img("/media/eco/macbook.jpg", "Site de Leadership for the Ecozoic sur un portable"),
+    img("/media/eco/instagram.jpg", "Publications Instagram de Leadership for the Ecozoic"),
     img("/media/eco/chair.jpg", "Site de Leadership for the Ecozoic, portable posé sur une chaise"),
     img("/media/eco/tote.jpg", "Sac fourre-tout Leadership for the Ecozoic"),
     img("/media/eco/door.jpg", "Plaque de porte Leadership for the Ecozoic"),

@@ -1,0 +1,18 @@
+---
+// A guideline page as HTML: a 16:9 artboard whose contents scale with its width.
+import GuideNode from "./GuideNode.astro";
+import { background, type Brand, type GuidePageData } from "../lib/guide";
+import "../styles/guides.css";
+
+interface Props {
+  page: GuidePageData;
+  brand: Brand;
+  thumb?: boolean;
+  class?: string;
+}
+const { page, brand, thumb, class: className } = Astro.props;
+---
+
+<div class:list={["gp", className]} style={background(page.bg)} data-gp={page.n}>
+  {page.nodes.map((n) => <GuideNode node={n} brand={brand} thumb={thumb} />)}
+</div>

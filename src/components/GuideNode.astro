@@ -1,0 +1,47 @@
+---
+// One node of a Figma guideline page, drawn absolutely in --u units. Groups
+// recurse; artwork and photos are exported images (thumbnail-sized copies in
+// the grid, swapped for the full ones in the viewer via data-full).
+import { boxStyle, common, paragraphs, segStyle, strokeOverlay, textStyle, u, type Brand, type GuideNode } from "../lib/guide";
+
+interface Props {
+  node: GuideNode;
+  brand: Brand;
+  thumb?: boolean;
+}
+const { node: n, brand, thumb } = Astro.props;
+const asset = (src: string) => `/media/guidelines/${brand}/${src}`;
+const small = (src: string) => (thumb && !src.endsWith(".svg") ? asset(`t/${src}`) : asset(src));
+---
+
+{
+  n.type === "text" && n.segs.length > 0 && (
+    <div class="gt" style={textStyle(n)} data-auto={n.auto}>
+      {paragraphs(n.segs).map(({ head, segs }) => (
+        <p style={segStyle(head)} data-li={segs.length ? head.li : undefined}>
+          {segs.length ? segs.map((g) => <span style={segStyle(g)}>{g.t}</span>) : "​"}
+        </p>
+      ))}
+    </div>
+  )
+}
+{
+  (n.type === "img" || n.type === "art") && (
+    <img
+      src={small(n.src)}
+      data-full={thumb && !n.src.endsWith(".svg") ? asset(n.src) : undefined}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      style={[`left:${u(n.x)}`, `top:${u(n.y)}`, `width:${u(n.w)}`, `height:${u(n.h)}`, ...common(n)].join(";")}
+    />
+  )
+}
+{
+  (n.type === "box" || n.type === "group") && (
+    <div style={boxStyle(n, n.bgImg && small(n.bgImg.src))} data-full-bg={thumb && n.bgImg ? asset(n.bgImg.src) : undefined}>
+      {n.kids?.map((k) => <Astro.self node={k} brand={brand} thumb={thumb} />)}
+      {n.type === "group" && n.stroke && <div style={strokeOverlay(n)} />}
+    </div>
+  )
+}

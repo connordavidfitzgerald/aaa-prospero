@@ -1,0 +1,135 @@
+/* Brand guideline pages (CCAM, Ecozoic, chimie), rebuilt in HTML from Figma.
+   Each face is named "G <Figma family> <Figma style>" so the extracted text
+   styles map onto it directly (see GuideNode.astro). Inter is variable. */
+@font-face {
+  font-family: "G Inter";
+  src: url("/fonts/guides/inter-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "G ABC Diatype Regular";
+  src: url("/fonts/guides/diatype-regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G ABC Diatype Medium";
+  src: url("/fonts/guides/diatype-medium.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G ABC Diatype Bold";
+  src: url("/fonts/guides/diatype-bold.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Animo Condensed Regular";
+  src: url("/fonts/guides/animo-condensed.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Animo Condensed Regular Outline";
+  src: url("/fonts/guides/animo-condensed-outline.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Animo Normal Regular";
+  src: url("/fonts/guides/animo-normal.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Bradford LL Regular";
+  src: url("/fonts/guides/bradford-regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Bradford LL Medium";
+  src: url("/fonts/guides/bradford-medium.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Bradford LL Regular Italic";
+  src: url("/fonts/guides/bradford-italic.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G E8888 Web Regular";
+  src: url("/fonts/guides/e8888.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Editorial New Regular";
+  src: url("/fonts/guides/editorial-new.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G Favorit Mono Std Regular";
+  src: url("/fonts/guides/favorit-mono.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "G GT Alpina Medium";
+  src: url("/fonts/guides/alpina-medium.woff2") format("woff2");
+  font-display: swap;
+}
+
+/* A page is a 1920×1080 artboard; --u is one Figma pixel at whatever width
+   the page is drawn (a grid thumbnail or the full view). */
+.gp {
+  container-type: inline-size;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  /* Resolved by each child against this container. */
+  --u: calc(100cqw / 1920);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  font-optical-sizing: none;
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+}
+.gp * {
+  position: absolute;
+  box-sizing: border-box;
+  margin: 0;
+}
+.gp .gt {
+  display: flex;
+  flex-direction: column;
+}
+.gp .gt p,
+.gp .gt span {
+  position: static;
+}
+.gp .gt p {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.gp .gt[data-auto="WIDTH_AND_HEIGHT"] p {
+  white-space: pre;
+}
+.gp img {
+  display: block;
+  max-width: none;
+}
+
+/* Figma list paragraphs. */
+.gp .gt {
+  counter-reset: li;
+}
+.gp p[data-li] {
+  padding-left: 1.3em;
+}
+.gp p[data-li]::before {
+  display: inline-block;
+  width: 1.3em;
+  margin-left: -1.3em;
+}
+.gp p[data-li="UNORDERED"]::before {
+  content: "•";
+}
+.gp p[data-li="ORDERED"]::before {
+  counter-increment: li;
+  content: counter(li) ".";
+}

@@ -534,7 +534,6 @@ interface GuidePage {
   n: number;
   num: string;
   title: string;
-  src: string;
   section: string;
 }
 
@@ -553,18 +552,33 @@ function initGuidelines(main: HTMLElement) {
   const labels = Object.fromEntries(secButtons.map((b) => [b.dataset.guideSec!, b.textContent!.trim()]));
 
   let currentN = 0;
+  // Pages are HTML; the full view is a copy of the grid's, with the small
+  // thumbnail images swapped for full-size ones.
+  const fullPage = (n: number) => {
+    const page = grid.querySelector<HTMLElement>(`[data-gp="${n}"]`)!.cloneNode(true) as HTMLElement;
+    page.className = "gp";
+    page.style.cssText += ";position:absolute;inset:0;width:100%;height:100%";
+    page.querySelectorAll<HTMLImageElement>("img").forEach((im) => {
+      im.loading = "eager";
+      if (im.dataset.full) im.src = im.dataset.full;
+    });
+    page.querySelectorAll<HTMLElement>("[data-full-bg]").forEach((el) => {
+      el.style.backgroundImage = el.style.backgroundImage.replace(/url\("?[^")]*"?\)/, `url("${el.dataset.fullBg}")`);
+    });
+    return page;
+  };
+  const decoded = (page: HTMLElement) =>
+    Promise.all([...page.querySelectorAll("img")].map((im) => im.decode().catch(() => {})));
   const preload = (n: number) => {
-    const p = pages[n - 1];
-    if (p) new Image().src = p.src;
+    if (n >= 1 && n <= pages.length) decoded(fullPage(n));
   };
 
   const showPage = (n: number, dir = 1) => {
     n = ((n - 1 + pages.length) % pages.length) + 1;
     const p = pages[n - 1];
-    const img = new Image();
-    img.src = p.src;
-    img.alt = `${p.num} ${p.title}`;
-    img.className = "absolute inset-0 h-full w-full object-cover";
+    const img = fullPage(n);
+    img.setAttribute("role", "img");
+    img.setAttribute("aria-label", `${p.num} ${p.title}`);
     stage.appendChild(img);
     const old = [...stage.children].filter((c) => c !== img);
     const reveal = () => {
@@ -584,7 +598,7 @@ function initGuidelines(main: HTMLElement) {
       );
       gsap.to(old, { x: dir > 0 ? "-6%" : "6%", duration: 0.9, ease: "expo.inOut" });
     };
-    img.decode().then(reveal, reveal);
+    decoded(img).then(reveal);
 
     currentN = n;
     count.textContent = `${n} / ${pages.length}`;

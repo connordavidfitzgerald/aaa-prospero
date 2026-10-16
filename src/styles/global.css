@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Favorit Pro";
+  src: url("/fonts/FavoritPro-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Favorit Pro";
+  src: url("/fonts/FavoritPro-Regular.otf") format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "Favorit Pro", "Helvetica Neue", Arial, sans-serif;
+  --color-ink: #000;
+  --color-paper: #fff;
+  --color-slate: #3d3d3d;
+  --color-green: #20fe06;
+  --breakpoint-md: 48rem;
+}
+
+/* One type style for the whole site: Favorit Pro Bold 20px, 100% leading,
+   −4% tracking (measured from the Figma WEB UI frames at 1728px). It eases
+   down to 16px on narrower screens. */
+:root {
+  --fs: 16px;
+  --gutter: 10px;
+  --margin: 10px;
+  /* Number column width in the nav, index and dropdown (215px @1728). */
+  --num: clamp(56px, 12.45vw, 215px);
+  /* Intro row sits at y=76 in Figma: nav top (10) + one line + gap. */
+  --intro: calc(10px + var(--fs) + 46px);
+  --bg: var(--color-paper);
+  --fg: var(--color-ink);
+  --muted: 0.4;
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  transition:
+    background-color 0.6s var(--ease-out),
+    color 0.6s var(--ease-out);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+html[data-theme="dark"] {
+  --bg: var(--color-slate);
+  --fg: var(--color-paper);
+}
+html[data-theme="media"] {
+  --bg: var(--color-ink);
+  --fg: var(--color-paper);
+}
+/* The fixed nav only catches clicks on its own controls, so content set on
+   the nav line (the homepage index) stays clickable. In the base layer so
+   utilities like pointer-events-none still win. */
+@layer base {
+  .site-nav {
+    pointer-events: none;
+  }
+  .site-nav :where(a, button, [data-nav-overlay], [data-nav-menu]) {
+    pointer-events: auto;
+  }
+}
+/* While the chapter dropdown is open the nav sits on the slate overlay. */
+html[data-nav-open] .site-nav {
+  color: var(--color-paper);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--fs);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  min-height: 100svh;
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+a,
+button {
+  color: inherit;
+  cursor: pointer;
+}
+button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding-inline: var(--margin);
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Presentation slide: from tablet up, a page fills exactly one viewport
+   (main adds 10px of bottom padding). Phones scroll as usual. */
+@utility slide {
+  @media (width >= 48rem) {
+    display: flex;
+    flex-direction: column;
+    height: calc(100svh - 10px);
+  }
+}
+
+@utility text-muted {
+  opacity: var(--muted);
+}
+
+/* Hairline rule that spans its grid row. Drawn left→right on entrance. */
+@utility rule {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--rule-x, 0px);
+    right: var(--rule-x, 0px);
+    height: 1px;
+    background: currentColor;
+    opacity: 0.18;
+    transform-origin: left;
+    transform: scaleX(var(--rule, 1));
+  }
+}
+
+/* Hover dimming for lists: when one row is hovered, the others mute. */
+@utility dim-list {
+  & > * {
+    transition: opacity 0.35s var(--ease-out);
+  }
+  @media (hover: hover) {
+    &:has(> [data-row]:hover) > [data-row]:not(:hover) {
+      opacity: var(--muted);
+    }
+  }
+}
+
+/* Links that read as text; a subtle opacity change on hover. */
+@utility link {
+  transition: opacity 0.3s var(--ease-out);
+  @media (hover: hover) {
+    &:hover {
+      opacity: var(--muted);
+    }
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Index hover preview: the iframe'd page is a still picture. */
+html[data-preview] {
+  transition: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+html[data-preview] astro-dev-toolbar {
+  display: none;
+}
+
+/* Elements animated in by GSAP start hidden so nothing flashes before the
+   entrance runs. The .no-js / reduced-motion paths reveal them. */
+html.js [data-reveal],
+html.js [data-split],
+html.js [data-media] {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal],
+  html.js [data-split],
+  html.js [data-media] {
+    visibility: visible;
+  }
+}
+
+/* SplitText line masks: a little room so descenders aren't clipped. */
+.split-line-mask {
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/* The guideline section switcher sits on the overlay like the nav does. */
+html[data-nav-open] [data-guide-sub] {
+  color: var(--color-paper);
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+mux-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --media-object-fit: cover;
+}

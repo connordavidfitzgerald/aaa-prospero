@@ -80,9 +80,9 @@ const guideBrand = p.view === "guidelines" ? (p.id.replace("-guidelines", "") as
 const thumb = (key: string, src: string) => ({ key, name: PROJECTS[key].client, href: href(`work/${key}`, lang), src });
 const thumbs = [
   thumb("ccam", "/media/ccam/subway.jpg"),
-  thumb("ecozoic", "/media/eco/macbook.jpg"),
+  thumb("ecozoic", "/media/eco/instagram.jpg"),
   thumb("chimie", "/media/chimie/01.jpg"),
-  thumb("ccam", "/media/ccam/macbook.jpg"),
+  thumb("ccam", "/media/ccam/posters.jpg"),
   thumb("ecozoic", "/media/eco/door.jpg"),
   thumb("chimie", "/media/chimie/04.jpg"),
 ];
@@ -111,7 +111,11 @@ const thumbs = [
         description={t(project.description, lang)}
         services={t(project.services, lang)}
         links={[
-          { label: t(UI.viewGuidelines, lang), href: href(`work/${p.id}/guidelines`, lang), internal: true },
+          {
+            label: t(p.id === "ccam" ? UI.viewGuidelines : UI.viewBrandGuidelines, lang),
+            href: href(`work/${p.id}/guidelines`, lang),
+            internal: true,
+          },
           ...project.links.map((l) => ({ label: `${t(l.label, lang)} ↗`, href: l.href })),
         ]}
         prev={prev}
