@@ -119,7 +119,7 @@ export const ECOZOIC: Project = {
   client: "Ecozoic",
   media: [
     img("/media/eco/eco-cover.jpg", "Leadership for the Ecozoic"),
-    img("/media/eco/instagram.jpg", "Publications Instagram de Leadership for the Ecozoic"),
+    img("/media/eco/instagram.png", "Publications Instagram de Leadership for the Ecozoic"),
     ...(projects.ecozoic.media as Media[]),
   ],
 };
