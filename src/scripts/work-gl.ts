@@ -4,8 +4,8 @@ import gsap from "gsap";
 // Selected projects, in WebGL. The DOM thumbnails stay in place for layout,
 // links and hit-testing; each one is redrawn here as a plane at the same
 // pixel rect. Hovering lifts the plane toward the cursor, bulges the sheet
-// under it and floods it with colour from the pointer outward, behind a
-// hairline of green. Moving fast splits the channels a little.
+// under it and floods it with colour from the pointer outward. Moving fast
+// splits the channels a little.
 
 const VERT = /* glsl */ `
   uniform vec2 uMouse;
@@ -35,7 +35,6 @@ const FRAG = /* glsl */ `
   uniform float uReveal;
   uniform float uZoom;
   uniform float uTime;
-  uniform vec3 uGreen;
   varying vec2 vUv;
   varying float vLift;
 
@@ -68,11 +67,8 @@ const FRAG = /* glsl */ `
     dist += (noise(vUv * aspect * 7.0 + uTime * 0.25) - 0.5) * 0.12;
     float r = uColor * 1.5 - 0.05;
     float fill = smoothstep(r, r - 0.025, dist);
-    float edge = 1.0 - smoothstep(0.0, 0.006, abs(dist - r));
-    edge *= clamp(uColor * (1.0 - uColor) * 6.0, 0.0, 1.0);
 
     col = mix(grey, col, fill);
-    col = mix(col, uGreen, edge);
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -120,7 +116,6 @@ export async function mountWorkGL(section: HTMLElement, canvas: HTMLCanvasElemen
   camera.position.z = DIST;
 
   const geometry = new THREE.PlaneGeometry(1, 1, 48, 32);
-  const green = new THREE.Color("#20fe06");
   const planes: Plane[] = items.map((el, i) => {
     const tex = textures[i];
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -135,7 +130,6 @@ export async function mountWorkGL(section: HTMLElement, canvas: HTMLCanvasElemen
       uReveal: { value: 0 },
       uZoom: { value: 1.12 },
       uTime: { value: 0 },
-      uGreen: { value: new THREE.Vector3(green.r, green.g, green.b) },
     };
     const mesh = new THREE.Mesh(geometry, new THREE.ShaderMaterial({ uniforms: u, vertexShader: VERT, fragmentShader: FRAG }));
     group.add(mesh);

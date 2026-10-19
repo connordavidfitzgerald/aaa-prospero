@@ -346,53 +346,7 @@ function initRowLinks(main: HTMLElement) {
 function initWork(main: HTMLElement) {
   const work = main.querySelector<HTMLElement>("[data-work]");
   if (!work) return;
-  const splits = new Map<string, SplitText>();
-  work.querySelectorAll<HTMLElement>("[data-work-name]").forEach((el) => {
-    splits.set(el.dataset.workName!, SplitText.create(el, { type: "chars", mask: "chars" }));
-  });
-
-  // One name on screen at a time: the next name waits until the outgoing one
-  // has cleared its mask, so two titles never overlap.
   let active = "";
-  let clearAt = 0;
-  let leaving = "";
-  const entering = new Map<string, gsap.core.Tween>();
-  const set = (key: string) => {
-    if (key === active) return;
-    if (active) {
-      const prev = splits.get(active)!;
-      const tw = entering.get(active);
-      if (tw && tw.progress() === 0) {
-        // Never started (still waiting on another name): just reset it.
-        tw.kill();
-        gsap.set(prev.chars, { yPercent: 105 });
-      } else {
-        const out = gsap.to(prev.chars, { yPercent: -105, duration: 0.3, ease: "power3.in", stagger: 0.012, overwrite: true });
-        clearAt = performance.now() + out.totalDuration() * 1000;
-        leaving = active;
-      }
-      entering.delete(active);
-    }
-    active = key;
-    if (!key) return;
-    const s = splits.get(key)!;
-    gsap.set(s.elements, { opacity: 1 });
-    entering.set(
-      key,
-      gsap.fromTo(
-        s.chars,
-        { yPercent: 105 },
-        {
-          yPercent: 0,
-          duration: 0.8,
-          ease: EASE,
-          stagger: 0.035,
-          overwrite: true,
-          delay: key === leaving ? 0 : Math.max(0, clearAt - performance.now()) / 1000,
-        },
-      ),
-    );
-  };
 
   // Desktop pointers get the WebGL thumbnails. Their media is taken out of
   // the shared entrance (the GL planes run their own); if WebGL can't start,
@@ -421,18 +375,17 @@ function initWork(main: HTMLElement) {
 
   work.querySelectorAll<HTMLElement>("[data-work-item]").forEach((item) => {
     item.addEventListener("mouseenter", () => {
-      set(item.dataset.workItem!);
-      gl?.hover(item.dataset.workItem!);
+      active = item.dataset.workItem!;
+      gl?.hover(active);
     });
     item.addEventListener("mouseleave", () => {
-      set("");
+      active = "";
       gl?.hover("");
     });
   });
   teardown.push(() => {
     dead = true;
     gl?.destroy();
-    splits.forEach((s) => s.revert());
   });
 }
 

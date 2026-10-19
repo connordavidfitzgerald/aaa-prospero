@@ -18,7 +18,6 @@ interface Props {
   thumbs: WorkThumb[];
 }
 const { lang, prev, next, thumbs } = Astro.props;
-const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
 ---
 
 <Intro text={t(WORK.intro, lang)} prev={prev} next={next} />
@@ -40,31 +39,12 @@ const names = [...new Map(thumbs.map((th) => [th.key, th.name])).entries()];
     }
   </ul>
 
-  <!-- WebGL redraw of the thumbnails (src/scripts/work-gl.ts), under the names. -->
+  <!-- WebGL redraw of the thumbnails (src/scripts/work-gl.ts). -->
   <canvas class="pointer-events-none absolute inset-0 hidden h-full w-full" data-work-gl aria-hidden="true"></canvas>
 
-  <!-- The hovered project's name, set huge across the row (Figma 16:8372). -->
-  <div class="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex" aria-hidden="true">
-    {
-      names.map(([key, name]) => (
-        <p
-          class="absolute whitespace-nowrap text-[11.5vw] leading-[0.8] tracking-[-0.05em] text-ink opacity-0"
-          data-work-name={key}
-        >
-          {name}
-        </p>
-      ))
-    }
-  </div>
 </section>
 
 <style>
-  /* SplitText's per-letter masks clip on both axes; with the tight tracking
-     that shaves the sides off neighbouring letters. Clip vertically only. */
-  [data-work-name] > :global(div) {
-    overflow-x: visible !important;
-    overflow-y: clip !important;
-  }
   /* With WebGL running, the canvas draws the pictures; the DOM ones stay for
      layout, links and hit-testing. */
   [data-work][data-gl] :global(.work-img) {
